@@ -10,10 +10,10 @@ class Incident(BaseModel):
 
     affected_population: int = Field(ge=0)
 
-    blocked_routes: List[str] = []
-    active_routes: List[str] = []
+    blocked_routes: List[str] = Field(default_factory=list)
+    active_routes: List[str] = Field(default_factory=list)
 
     available_ambulances: int = Field(ge=0)
     available_shelters: int = Field(ge=0)
 
-    urgent_needs: List[str] = []
+    urgent_needs: List[str] = Field(default_factory=list)
