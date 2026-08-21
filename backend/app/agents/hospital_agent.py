@@ -1,5 +1,6 @@
 from app.models.incident import Incident
 from app.models.agent_report import AgentReport
+from app.services.llm_service import generate_response
 
 
 def analyze_incident(incident: Incident) -> AgentReport:
@@ -8,6 +9,7 @@ def analyze_incident(incident: Incident) -> AgentReport:
     resource_requests = []
     constraints = []
 
+    # Existing rule-based analysis
     if incident.severity >= 8:
         observations.append("High-severity emergency detected.")
 
@@ -23,6 +25,44 @@ def analyze_incident(incident: Incident) -> AgentReport:
     )
 
     constraints.append("Hospital capacity must not be exceeded.")
+
+    # AI-powered hospital analysis
+    system_prompt = """
+You are the Hospital Emergency Response Agent.
+
+Analyze the emergency from a hospital perspective.
+
+Focus on:
+- Patient care
+- Ambulance availability
+- Medical supplies
+- Hospital capacity
+- Emergency medical resources
+
+Give a concise operational recommendation for emergency coordinators.
+Do not invent facts that are not provided.
+"""
+
+    user_prompt = f"""
+Emergency incident:
+
+Location: {incident.location}
+Severity: {incident.severity}/10
+Available ambulances: {incident.available_ambulances}
+Urgent needs: {incident.urgent_needs}
+
+Provide the hospital's recommended immediate response.
+"""
+
+    ai_response = generate_response(
+        system_prompt,
+        user_prompt,
+    )
+
+    # Add the AI analysis to the hospital report
+    observations.append(
+        f"AI Hospital Analysis: {ai_response}"
+    )
 
     return AgentReport(
         agent_name="Hospital",

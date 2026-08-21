@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Surfaces */
+  --color-base: #08090b;
+  --color-surface: #121419;
+  --color-surface-2: #191c22;
+  --color-surface-3: #21252c;
+  --color-border: #262a31;
+  --color-border-strong: #34393f;
+
+  /* Text */
+  --color-text-primary: #e9eaed;
+  --color-text-secondary: #9298a4;
+  --color-text-tertiary: #5c6270;
+
+  /* Semantic accents */
+  --color-critical: #ef4444;
+  --color-critical-dim: #7f1d1d;
+  --color-warning: #f5a623;
+  --color-warning-dim: #78350f;
+  --color-safe: #34d399;
+  --color-safe-dim: #064e3b;
+  --color-coordinator: #6d6af6;
+  --color-coordinator-dim: #2e2b6e;
+  --color-cyan: #2dd4bf;
+
+  --animate-pulse-slow: pulse-slow 2.4s ease-in-out infinite;
+  --animate-flow: flow-dash 1.6s linear infinite;
+  --animate-rise: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes flow-dash {
+  to { stroke-dashoffset: -24; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(109, 106, 246, 0.06), transparent 45%),
+    radial-gradient(circle at 100% 20%, rgba(45, 212, 191, 0.04), transparent 40%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--color-coordinator);
+  color: white;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-3) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3);
+  border-radius: 999px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-coordinator);
+  outline-offset: 2px;
+}
+
+.mono-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes.agents import router as agents_router
 from app.routes.coordination import router as coordination_router
 from app.routes.simulation import router as simulation_router
+from app.routes.sms import router as sms_router
 
 
 app = FastAPI(
@@ -22,6 +23,7 @@ app.add_middleware(
 app.include_router(agents_router)
 app.include_router(coordination_router)
 app.include_router(simulation_router)
+app.include_router(sms_router)
 
 @app.get("/")
 def root():
