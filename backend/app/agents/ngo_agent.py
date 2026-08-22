@@ -79,9 +79,7 @@ Provide the NGO / relief team's recommended immediate response.
         user_prompt
     )
 
-    observations.append(
-        f"AI NGO / Relief Analysis: {ai_analysis}"
-    )
+   
 
     return AgentReport(
         agent_name="NGO / Relief",

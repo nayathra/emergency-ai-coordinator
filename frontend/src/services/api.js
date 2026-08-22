@@ -101,3 +101,32 @@ export function sendEmergencySMS(to, message) {
     }),
   });
 }
+export async function speakText(text) {
+  const response = await fetch(
+    "http://127.0.0.1:8000/voice/speak",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: text,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    let message = "Voice generation failed.";
+
+    try {
+      const errorData = await response.json();
+      message = errorData.detail || message;
+    } catch {
+      // Ignore JSON parsing failure
+    }
+
+    throw new Error(message);
+  }
+
+  return await response.blob();
+}

@@ -73,9 +73,7 @@ Provide the police department's recommended immediate response.
         user_prompt,
     )
 
-    observations.append(
-        f"AI Police Analysis: {ai_response}"
-    )
+ 
 
     return AgentReport(
         agent_name="Police",

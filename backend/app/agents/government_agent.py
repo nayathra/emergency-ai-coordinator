@@ -82,9 +82,7 @@ immediate response and explain the main priorities.
         user_prompt
     )
 
-    observations.append(
-        f"AI Government Analysis: {ai_analysis}"
-    )
+  
 
     return AgentReport(
         agent_name="Government",

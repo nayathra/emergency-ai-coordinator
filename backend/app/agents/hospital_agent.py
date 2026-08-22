@@ -59,10 +59,7 @@ Provide the hospital's recommended immediate response.
         user_prompt,
     )
 
-    # Add the AI analysis to the hospital report
-    observations.append(
-        f"AI Hospital Analysis: {ai_response}"
-    )
+   
 
     return AgentReport(
         agent_name="Hospital",

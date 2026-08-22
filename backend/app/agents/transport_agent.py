@@ -79,9 +79,7 @@ Urgent Needs: {incident.urgent_needs}
         user_prompt
     )
 
-    observations.append(
-        f"AI Transport Analysis: {ai_analysis}"
-    )
+    
 
     return AgentReport(
         agent_name="Transport",

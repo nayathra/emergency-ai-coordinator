@@ -5,6 +5,7 @@ import {
   healthCheck,
   runCoordination,
   runSimulation,
+  speakText,
 } from "../services/api";
 
 import CoordinationFlow from "../components/CoordinationFlow";
@@ -37,6 +38,11 @@ const DEFAULT_INCIDENT = {
 
 
 export default function Dashboard() {
+
+  // =========================================================
+  // INCIDENT
+  // =========================================================
+
   const [incidentDraft, setIncidentDraft] =
     useState(DEFAULT_INCIDENT);
 
@@ -45,6 +51,11 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+
+  // =========================================================
+  // SIMULATION
+  // =========================================================
 
   const [simulationResult, setSimulationResult] =
     useState(null);
@@ -55,32 +66,60 @@ export default function Dashboard() {
   const [simulationError, setSimulationError] =
     useState(null);
 
+
+  // =========================================================
+  // SYSTEM STATUS
+  // =========================================================
+
   const [systemStatus, setSystemStatus] =
     useState("checking");
 
 
+  // =========================================================
+  // VOICE
+  // =========================================================
+
+  const [voiceLoading, setVoiceLoading] =
+    useState(false);
+
+
+  // =========================================================
+  // HEALTH CHECK
+  // =========================================================
+
   useEffect(() => {
+
     let cancelled = false;
 
     healthCheck()
       .then(() => {
+
         if (!cancelled) {
           setSystemStatus("operational");
         }
+
       })
       .catch(() => {
+
         if (!cancelled) {
           setSystemStatus("offline");
         }
+
       });
 
     return () => {
       cancelled = true;
     };
+
   }, []);
 
 
+  // =========================================================
+  // RUN COORDINATION
+  // =========================================================
+
   const handleRunCoordination = async () => {
+
     setLoading(true);
     setError(null);
 
@@ -88,12 +127,16 @@ export default function Dashboard() {
     setSimulationError(null);
 
     try {
-      const result = await runCoordination(incidentDraft);
+
+      const result =
+        await runCoordination(incidentDraft);
 
       setCoordinationResult(result);
+
       setSystemStatus("operational");
 
     } catch (err) {
+
       setError(err.message);
 
       if (err.status === null) {
@@ -101,31 +144,129 @@ export default function Dashboard() {
       }
 
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
 
-  const handleRunSimulation = async (simulatedChanges) => {
+  // =========================================================
+  // RUN SIMULATION
+  // =========================================================
+
+  const handleRunSimulation = async (
+    simulatedChanges
+  ) => {
+
     setSimulationLoading(true);
     setSimulationError(null);
 
     try {
-      const result = await runSimulation(
-        coordinationResult.incident,
-        simulatedChanges
-      );
+
+      const result =
+        await runSimulation(
+          coordinationResult.incident,
+          simulatedChanges
+        );
 
       setSimulationResult(result);
 
     } catch (err) {
+
       setSimulationError(err.message);
 
     } finally {
+
       setSimulationLoading(false);
+
     }
+
   };
 
+
+  // =========================================================
+  // SPEAK COORDINATOR DECISION
+  // =========================================================
+
+  const handleSpeakDecision = async () => {
+
+    if (!coordinationResult?.response_plan) {
+      return;
+    }
+
+    setVoiceLoading(true);
+
+    try {
+
+      const plan =
+        coordinationResult.response_plan;
+
+
+      const text = [
+
+        "Emergency response decision.",
+
+        `Overall priority is ${plan.overall_priority} out of 10.`,
+
+        ...(plan.selected_actions?.length
+          ? [
+              "Selected actions.",
+              ...plan.selected_actions,
+            ]
+          : []),
+
+        ...(plan.reasoning?.length
+          ? [
+              "Decision reasoning.",
+              ...plan.reasoning,
+            ]
+          : []),
+
+      ].join(" ");
+
+
+      const audioBlob =
+        await speakText(text);
+
+
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+const audio = new Audio(audioUrl);
+
+audio.volume = 1.0;
+
+audio.onended = () => {
+  URL.revokeObjectURL(audioUrl);
+};
+
+audio.onerror = () => {
+  console.error("Audio playback failed.");
+  URL.revokeObjectURL(audioUrl);
+};
+
+await audio.play();
+
+    } catch (err) {
+
+      console.error(
+        "Voice generation error:",
+        err
+      );
+
+    } finally {
+
+      setVoiceLoading(false);
+
+    }
+
+  };
+
+
+  // =========================================================
+  // COORDINATION PHASE
+  // =========================================================
 
   const phase =
     loading
@@ -135,8 +276,14 @@ export default function Dashboard() {
       : "idle";
 
 
+  // =========================================================
+  // UI
+  // =========================================================
+
   return (
+
     <div className="min-h-screen">
+
 
       {/* =====================================================
           HEADER
@@ -145,6 +292,7 @@ export default function Dashboard() {
       <header className="sticky top-0 z-10 border-b border-border bg-base/85 backdrop-blur-md">
 
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+
 
           {/* LOGO + TITLE */}
 
@@ -158,6 +306,7 @@ export default function Dashboard() {
               />
 
             </span>
+
 
             <div>
 
@@ -198,6 +347,7 @@ export default function Dashboard() {
                   : "bg-text-tertiary animate-pulse-slow"
               }`}
             />
+
 
             <span
               className={
@@ -271,6 +421,7 @@ export default function Dashboard() {
               className="mt-0.5 shrink-0 text-critical"
             />
 
+
             <div>
 
               <p className="text-[13px] font-semibold text-critical">
@@ -296,6 +447,7 @@ export default function Dashboard() {
 
           <>
 
+
             {/* =================================================
                 INCIDENT OVERVIEW
             ================================================= */}
@@ -305,7 +457,9 @@ export default function Dashboard() {
               <div className="animate-rise">
 
                 <IncidentOverview
-                  incident={coordinationResult.incident}
+                  incident={
+                    coordinationResult.incident
+                  }
                 />
 
               </div>
@@ -314,12 +468,13 @@ export default function Dashboard() {
 
 
             {/* =================================================
-                🗺️ EMERGENCY MAP
+                EMERGENCY MAP
             ================================================= */}
 
             {coordinationResult && (
 
               <div className="animate-rise overflow-hidden rounded-xl border border-border bg-surface">
+
 
                 {/* MAP HEADER */}
 
@@ -366,7 +521,9 @@ export default function Dashboard() {
             ================================================= */}
 
             <AgentGrid
-              reports={coordinationResult?.agent_reports}
+              reports={
+                coordinationResult?.agent_reports
+              }
               loading={loading}
             />
 
@@ -379,61 +536,111 @@ export default function Dashboard() {
 
               <>
 
-                {/* CONFLICTS */}
+
+                {/* =================================================
+                    CONFLICTS
+                ================================================= */}
 
                 <div className="animate-rise">
 
                   <ConflictPanel
+
                     detected={
-                      coordinationResult.response_plan
+                      coordinationResult
+                        .response_plan
                         ?.detected_conflicts
                     }
 
                     resolved={
-                      coordinationResult.response_plan
+                      coordinationResult
+                        .response_plan
                         ?.resolved_conflicts
                     }
+
                   />
 
                 </div>
 
 
-                {/* DECISION */}
+                {/* =================================================
+                    DECISION
+                ================================================= */}
 
                 <div className="animate-rise">
 
                   <DecisionPanel
                     plan={
-                      coordinationResult.response_plan
+                      coordinationResult
+                        .response_plan
                     }
                   />
+
+
+                  {/* =================================================
+                      VOICE BUTTON
+                  ================================================= */}
+
+                  <div className="mt-4 flex justify-end">
+
+                    <button
+                      onClick={
+                        handleSpeakDecision
+                      }
+                      disabled={voiceLoading}
+                      className="flex items-center gap-2 rounded-lg border border-coordinator/30 bg-coordinator/10 px-4 py-2 text-[12px] font-semibold text-coordinator transition-all hover:bg-coordinator/20 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+
+                      <span className="text-base">
+
+                        {voiceLoading
+                          ? "⏳"
+                          : "🔊"}
+
+                      </span>
+
+
+                      {voiceLoading
+                        ? "Generating voice..."
+                        : "Speak Decision"}
+
+                    </button>
+
+                  </div>
 
                 </div>
 
 
-                {/* RESOURCES */}
+                {/* =================================================
+                    RESOURCES
+                ================================================= */}
 
                 <div className="animate-rise">
 
                   <ResourcePanel
+
                     incident={
                       coordinationResult.incident
                     }
 
                     allocations={
-                      coordinationResult.response_plan
+                      coordinationResult
+                        .response_plan
                         ?.resource_allocations
                     }
+
                   />
 
                 </div>
 
 
-                {/* WHAT IF */}
+                {/* =================================================
+                    WHAT IF
+                ================================================= */}
 
                 <div className="animate-rise">
 
                   <WhatIfPanel
+
                     incident={
                       coordinationResult.incident
                     }
@@ -453,26 +660,37 @@ export default function Dashboard() {
                     error={
                       simulationError
                     }
+
                   />
 
                 </div>
 
 
-                {/* NEW INCIDENT */}
+                {/* =================================================
+                    NEW INCIDENT
+                ================================================= */}
 
                 <div className="flex justify-center pt-2">
 
                   <button
                     onClick={() => {
 
-                      setCoordinationResult(null);
-                      setSimulationResult(null);
+                      setCoordinationResult(
+                        null
+                      );
+
+                      setSimulationResult(
+                        null
+                      );
+
                       setError(null);
 
                     }}
                     className="text-[12px] font-medium text-text-tertiary transition-colors hover:text-text-secondary"
                   >
+
                     Start a new incident scenario
+
                   </button>
 
                 </div>
@@ -488,5 +706,7 @@ export default function Dashboard() {
       </main>
 
     </div>
+
   );
+
 }
