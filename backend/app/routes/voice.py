@@ -2,7 +2,10 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from app.services.llm_service import generate_speech
+from app.services.llm_service import (
+    generate_speech,
+    translate_text,
+)
 
 
 router = APIRouter(
@@ -13,18 +16,46 @@ router = APIRouter(
 
 class VoiceRequest(BaseModel):
     text: str
+    language: str = "en"
 
 
 @router.post("/speak")
 def speak(request: VoiceRequest):
     try:
-        audio = generate_speech(request.text)
+        language = request.language.lower()
+
+        supported_languages = {
+            "en": "English",
+            "ta": "Tamil",
+            "hi": "Hindi",
+        }
+
+        if language not in supported_languages:
+            raise ValueError(
+                "Unsupported language. Use 'en', 'ta', or 'hi'."
+            )
+
+        text = request.text
+
+        # Translate only the final user-facing response.
+        if language != "en":
+            text = translate_text(
+                text,
+                supported_languages[language],
+            )
+
+        audio = generate_speech(
+            text,
+            language,
+        )
 
         return Response(
             content=audio,
             media_type="audio/mpeg",
             headers={
-                "Content-Disposition": "inline; filename=emergency_response.mp3"
+                "Content-Disposition": (
+                    "inline; filename=emergency_response.mp3"
+                )
             },
         )
 

@@ -82,6 +82,12 @@ export default function Dashboard() {
   const [voiceLoading, setVoiceLoading] =
     useState(false);
 
+  const [voiceLanguage, setVoiceLanguage] =
+    useState("en");
+
+  const [voiceError, setVoiceError] =
+    useState(null);
+
 
   // =========================================================
   // HEALTH CHECK
@@ -125,6 +131,7 @@ export default function Dashboard() {
 
     setSimulationResult(null);
     setSimulationError(null);
+    setVoiceError(null);
 
     try {
 
@@ -197,6 +204,7 @@ export default function Dashboard() {
     }
 
     setVoiceLoading(true);
+    setVoiceError(null);
 
     try {
 
@@ -227,32 +235,76 @@ export default function Dashboard() {
       ].join(" ");
 
 
+      console.log(
+        "Generating voice:",
+        {
+          language: voiceLanguage,
+          text,
+        }
+      );
+
+
       const audioBlob =
-        await speakText(text);
+        await speakText(
+          text,
+          voiceLanguage
+        );
 
 
-      const audioUrl = URL.createObjectURL(audioBlob);
+      if (!audioBlob || audioBlob.size === 0) {
+        throw new Error(
+          "The voice service returned empty audio."
+        );
+      }
 
-const audio = new Audio(audioUrl);
 
-audio.volume = 1.0;
+      const audioUrl =
+        URL.createObjectURL(audioBlob);
 
-audio.onended = () => {
-  URL.revokeObjectURL(audioUrl);
-};
+      const audio =
+        new Audio(audioUrl);
 
-audio.onerror = () => {
-  console.error("Audio playback failed.");
-  URL.revokeObjectURL(audioUrl);
-};
+      audio.volume = 1.0;
 
-await audio.play();
+      audio.onended = () => {
+
+        URL.revokeObjectURL(
+          audioUrl
+        );
+
+      };
+
+      audio.onerror = () => {
+
+        console.error(
+          "Audio playback failed."
+        );
+
+        URL.revokeObjectURL(
+          audioUrl
+        );
+
+        setVoiceError(
+          "Audio was generated but could not be played."
+        );
+
+        setVoiceLoading(false);
+
+      };
+
+
+      await audio.play();
 
     } catch (err) {
 
       console.error(
-        "Voice generation error:",
+        "Voice generation/playback error:",
         err
+      );
+
+      setVoiceError(
+        err?.message ||
+        "Unable to generate or play the emergency voice."
       );
 
     } finally {
@@ -577,10 +629,56 @@ await audio.play();
 
 
                   {/* =================================================
-                      VOICE BUTTON
+                      MULTILINGUAL VOICE
                   ================================================= */}
 
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+
+                    {/* LANGUAGE SELECTOR */}
+
+                    <div className="flex items-center gap-2">
+
+                      <label
+                        htmlFor="voice-language"
+                        className="text-[11px] font-medium text-text-tertiary"
+                      >
+                        Voice Language
+                      </label>
+
+                      <select
+                        id="voice-language"
+                        value={voiceLanguage}
+                        onChange={(e) => {
+
+                          setVoiceLanguage(
+                            e.target.value
+                          );
+
+                          setVoiceError(null);
+
+                        }}
+                        disabled={voiceLoading}
+                        className="rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-text-primary outline-none transition-all focus:border-coordinator/50 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+
+                        <option value="en">
+                          English
+                        </option>
+
+                        <option value="ta">
+                          தமிழ்
+                        </option>
+
+                        <option value="hi">
+                          हिन्दी
+                        </option>
+
+                      </select>
+
+                    </div>
+
+
+                    {/* SPEAK BUTTON */}
 
                     <button
                       onClick={
@@ -606,6 +704,19 @@ await audio.play();
                     </button>
 
                   </div>
+
+
+                  {/* VOICE ERROR */}
+
+                  {voiceError && (
+
+                    <p className="mt-2 text-right text-[11px] text-critical">
+
+                      {voiceError}
+
+                    </p>
+
+                  )}
 
                 </div>
 
@@ -684,6 +795,7 @@ await audio.play();
                       );
 
                       setError(null);
+                      setVoiceError(null);
 
                     }}
                     className="text-[12px] font-medium text-text-tertiary transition-colors hover:text-text-secondary"

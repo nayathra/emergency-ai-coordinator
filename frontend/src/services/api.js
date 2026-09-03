@@ -101,31 +101,47 @@ export function sendEmergencySMS(to, message) {
     }),
   });
 }
-export async function speakText(text) {
-  const response = await fetch(
-    "http://127.0.0.1:8000/voice/speak",
-    {
+// 🔊 Generate emergency voice in the selected language
+export async function speakText(text, language = "en") {
+  let response;
+
+  try {
+    response = await fetch(`${BASE_URL}/voice/speak`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        text: text,
+        text,
+        language,
       }),
-    }
-  );
+    });
+  } catch (err) {
+    throw new ApiError(
+      "Unable to reach the Emergency Coordinator voice service.",
+      {
+        status: null,
+        detail: err.message,
+      }
+    );
+  }
 
   if (!response.ok) {
     let message = "Voice generation failed.";
+    let detail = null;
 
     try {
       const errorData = await response.json();
-      message = errorData.detail || message;
+      detail = errorData.detail;
+      message = detail || message;
     } catch {
       // Ignore JSON parsing failure
     }
 
-    throw new Error(message);
+    throw new ApiError(message, {
+      status: response.status,
+      detail,
+    });
   }
 
   return await response.blob();

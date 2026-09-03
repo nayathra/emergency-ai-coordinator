@@ -53,13 +53,73 @@ def generate_response(
 
 
 # =========================================================
+# TRANSLATION
+# =========================================================
+
+def translate_text(
+    text: str,
+    target_language: str,
+) -> str:
+    """
+    Translate the final emergency response into the
+    requested user-facing language.
+
+    Internal agent reasoning remains in English.
+    """
+
+    if not text or not text.strip():
+        raise ValueError(
+            "Text cannot be empty."
+        )
+
+    system_prompt = f"""
+You are a professional emergency communication translator.
+
+Translate the provided emergency response into {target_language}.
+
+Rules:
+- Preserve the exact meaning.
+- Do not add new information.
+- Do not remove important information.
+- Preserve numbers, locations, routes, resources and priorities.
+- Keep emergency instructions clear and concise.
+- Use natural spoken {target_language}.
+- Do not explain the translation.
+- Return only the translated text.
+"""
+
+    response = client.chat.completions.create(
+    model=MODEL,
+    messages=[
+        {
+            "role": "system",
+            "content": system_prompt,
+        },
+        {
+            "role": "user",
+            "content": text,
+        },
+    ],
+    temperature=0.1,
+    max_completion_tokens=1500,
+)
+
+    translated = response.choices[0].message.content
+
+    if not translated:
+        raise RuntimeError(
+            "Translation returned an empty response."
+        )
+
+    return translated.strip()
+
+
+# =========================================================
 # ELEVENLABS TEXT-TO-SPEECH
 # =========================================================
 
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
-# Official ElevenLabs example voice.
-# You can replace this later with another voice ID.
 ELEVENLABS_VOICE_ID = os.getenv(
     "ELEVENLABS_VOICE_ID",
     "JBFqnCBsd6RMkjVDRZzb"
@@ -68,9 +128,17 @@ ELEVENLABS_VOICE_ID = os.getenv(
 ELEVENLABS_MODEL = "eleven_flash_v2_5"
 
 
-def generate_speech(text: str) -> bytes:
+def generate_speech(
+    text: str,
+    language: str = "en",
+) -> bytes:
     """
     Convert text into speech using ElevenLabs.
+
+    Supported languages:
+        en = English
+        ta = Tamil
+        hi = Hindi
 
     Returns:
         bytes: MP3 audio data
@@ -84,6 +152,19 @@ def generate_speech(text: str) -> bytes:
     if not text or not text.strip():
         raise ValueError(
             "Text cannot be empty."
+        )
+
+    language_codes = {
+        "en": "en",
+        "ta": "ta",
+        "hi": "hi",
+    }
+
+    language = language.lower()
+
+    if language not in language_codes:
+        raise ValueError(
+            "Unsupported language. Use 'en', 'ta', or 'hi'."
         )
 
     url = (
@@ -100,6 +181,7 @@ def generate_speech(text: str) -> bytes:
     payload = {
         "text": text,
         "model_id": ELEVENLABS_MODEL,
+        "language_code": language_codes[language],
     }
 
     data = json.dumps(payload).encode("utf-8")
