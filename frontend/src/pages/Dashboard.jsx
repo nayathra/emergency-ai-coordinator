@@ -539,18 +539,18 @@ export default function Dashboard({ user, accessToken }) {
       default:
         return (
           <section className="animate-rise space-y-5">
-            <div className="rounded-2xl border border-border bg-surface p-7 shadow-xl">
-              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative overflow-hidden rounded-[26px] border border-border bg-gradient-to-br from-[#12213a] via-[#0e1829] to-[#0b111c] p-7 shadow-[0_24px_80px_rgba(0,0,0,.24)] sm:p-8">
+              <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-critical">
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-critical" /> Active emergency
+                  <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-critical" /> ACTIVE EMERGENCY
                   </div>
                   <h2 className="mt-2 text-2xl font-bold tracking-tight text-text-primary">{coordinationResult.incident.incident_id} · {coordinationResult.incident.location}</h2>
                   <p className="mt-1 text-sm text-text-secondary">{coordinationResult.incident.incident_type} response coordination · {coordinationResult.incident.affected_population?.toLocaleString?.() ?? coordinationResult.incident.affected_population} people affected</p>
                 </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-critical/20 bg-critical/5 px-4 py-3">
+                <div className="flex items-center gap-3 rounded-2xl border border-gold/20 bg-gold/5 px-4 py-3 shadow-[0_0_30px_rgba(216,177,90,.06)]">
                   <ShieldAlert size={18} className="text-critical" />
-                  <div><p className="text-[10px] uppercase tracking-widest text-text-tertiary">Severity</p><p className="text-lg font-bold text-critical">{coordinationResult.incident.severity}/10</p></div>
+                  <div><p className="text-[10px] uppercase tracking-widest text-text-tertiary">Severity</p><p className="text-lg font-bold text-gold">{coordinationResult.incident.severity}/10</p></div>
                 </div>
               </div>
             </div>
@@ -576,7 +576,7 @@ export default function Dashboard({ user, accessToken }) {
 
             <div className="grid gap-5 xl:grid-cols-[1.55fr_0.75fr]">
               <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl">
-                <div className="border-b border-border px-5 py-4">
+                <div className="border-b border-border bg-white/[0.015] px-6 py-5">
                   <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-safe"><span className="h-2 w-2 animate-pulse rounded-full bg-safe" /> Live response map</div>
                   <h3 className="mt-1 text-base font-semibold text-text-primary">Situational awareness</h3>
                 </div>
