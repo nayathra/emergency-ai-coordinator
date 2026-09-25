@@ -685,25 +685,6 @@ export default function Dashboard({ user, accessToken }) {
         </div>
       </div>
 
-      {coordinationResult && (
-        <>
-          <button onClick={() => setAssistantOpen((v) => !v)} aria-label="Ask AI Assistant" className="fixed bottom-6 right-5 z-50 grid h-16 w-16 place-items-center rounded-full border border-coordinator/40 bg-coordinator text-white shadow-2xl shadow-coordinator/30 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-coordinator/40">
-            <span className="absolute inset-0 rounded-full border border-coordinator/50 animate-ping opacity-20" />
-            <MessageCircle size={25} className="relative" />
-          </button>
-          {assistantOpen && (
-            <div className="fixed bottom-24 right-5 z-50 w-[min(420px,calc(100vw-2rem))] animate-rise">
-              <div className="max-h-[70vh] overflow-auto rounded-3xl border border-coordinator/30 bg-surface/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-xl">
-                <AssistantPanel
-                  incident={coordinationResult.incident}
-                  responsePlan={coordinationResult.response_plan}
-                  agentReports={coordinationResult.agent_reports}
-                />
-              </div>
-            </div>
-          )}
-        </>
-      )}
     </div>
   );
 }
