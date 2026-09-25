@@ -18,7 +18,7 @@ const DATA = {
   citizen:[["Active emergencies","04","Verified incidents",Siren],["Safe shelters","06","2 near capacity",Building2],["Hospitals nearby","08","Live availability",HeartPulse],["Verified updates","12","Last update 2 min ago",BellRing]]
 };
 
-export default function RoleWorkspace({user,onLogout}) {
+export default function RoleWorkspace({session,user,onLogout}) {
   const [openCoordinator,setOpenCoordinator]=useState(false);
   const [showUpdate,setShowUpdate]=useState(false);
   const [metric,setMetric]=useState("");
@@ -26,12 +26,12 @@ export default function RoleWorkspace({user,onLogout}) {
   const [note,setNote]=useState("");
   const [updateState,setUpdateState]=useState("idle");
   const meta=ROLE_META[user.role];
-  if(user.role==="government") return <div className="relative"><GovernmentShell user={user} onLogout={onLogout}/><Dashboard user={user}/></div>;
+  if(user.role==="government") return <div className="relative"><GovernmentShell user={user} onLogout={onLogout}/><Dashboard user={user} accessToken={session.access_token}/></div>;
   const Icon=meta.icon, cards=DATA[user.role];
 
   const submitUpdate=async(e)=>{
     e.preventDefault(); setUpdateState("loading");
-    try{await updateResource(user.access_token||"",{metric,value,note});setUpdateState("success");setMetric("");setValue("");setNote("");}
+    try{await updateResource(session.access_token,{metric,value,note});setUpdateState("success");setMetric("");setValue("");setNote("");}
     catch(err){setUpdateState(err.message||"Update failed.");}
   };
 
@@ -44,7 +44,7 @@ export default function RoleWorkspace({user,onLogout}) {
         <section className="rounded-2xl border border-white/8 bg-[#0d1016] p-5"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-slate-600">Operations</p><div className="mt-4 space-y-2"><button onClick={()=>setShowUpdate(true)} className="flex w-full items-center justify-between rounded-xl border border-indigo-400/20 bg-indigo-400/5 px-4 py-3 text-left text-xs font-semibold text-indigo-200 hover:bg-indigo-400/10">Update resource availability <ArrowRight size={14}/></button>{["Acknowledge coordinator request","Share field status"].map(item=><button key={item} className="flex w-full items-center justify-between rounded-xl border border-white/7 bg-white/[.02] px-4 py-3 text-left text-xs font-medium text-slate-300 hover:border-indigo-400/20">{item}<ArrowRight size={14} className="text-slate-600"/></button>)}</div><div className="mt-5 flex items-center gap-2 text-[10px] text-emerald-300"><CheckCircle2 size={13}/>Updates are shared with authorized coordinators.</div></section></div>
     </main>
     {showUpdate&&<div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-5 backdrop-blur-sm"><form onSubmit={submitUpdate} className="w-full max-w-md rounded-3xl border border-white/10 bg-[#0d1016] p-6 shadow-2xl"><div className="mb-5"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-indigo-300">Operational update</p><h2 className="mt-2 text-xl font-semibold">Share current field status</h2><p className="mt-1 text-xs leading-5 text-slate-500">This update is written to the authenticated organization profile.</p></div><div className="space-y-4"><input required value={metric} onChange={e=>setMetric(e.target.value)} placeholder="Metric (e.g. Ambulances)" className="input"/><input required value={value} onChange={e=>setValue(e.target.value)} placeholder="Current value (e.g. 1 available)" className="input"/><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="Additional note" className="input min-h-24 resize-none"/></div>{updateState!=="idle"&&updateState!=="loading"&&<p className={`mt-4 text-xs ${updateState==="success"?"text-emerald-300":"text-red-300"}`}>{updateState==="success"?"✓ Operational update shared successfully.":updateState}</p>}<div className="mt-5 flex gap-2"><button type="button" onClick={()=>{setShowUpdate(false);setUpdateState("idle")}} className="flex-1 rounded-xl border border-white/10 px-4 py-3 text-xs font-semibold text-slate-400">Cancel</button><button disabled={updateState==="loading"} className="flex-1 rounded-xl bg-indigo-500 px-4 py-3 text-xs font-semibold">{updateState==="loading"?"Sharing…":"Share update"}</button></div></form><style>{`.input{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);padding:.75rem .85rem;font-size:.8rem;color:#fff;outline:none}.input::placeholder{color:#475569}.input:focus{border-color:rgba(129,140,248,.5)}`}</style></div>}
-    {openCoordinator&&<div className="fixed inset-0 z-50 overflow-auto bg-[#07090d]"><div className="sticky top-0 z-50 flex justify-end border-b border-white/8 bg-[#090b10]/90 px-5 py-3 backdrop-blur-xl"><button onClick={()=>setOpenCoordinator(false)} className="rounded-xl border border-white/10 px-4 py-2 text-xs font-semibold text-slate-300">Back to role workspace</button></div><Dashboard user={user}/></div>}
+    {openCoordinator&&<div className="fixed inset-0 z-50 overflow-auto bg-[#07090d]"><div className="sticky top-0 z-50 flex justify-end border-b border-white/8 bg-[#090b10]/90 px-5 py-3 backdrop-blur-xl"><button onClick={()=>setOpenCoordinator(false)} className="rounded-xl border border-white/10 px-4 py-2 text-xs font-semibold text-slate-300">Back to role workspace</button></div><Dashboard user={user} accessToken={session.access_token}/></div>}
   </div>;
 }
 function GovernmentShell({user,onLogout}){return <div className="absolute right-5 top-4 z-40 flex items-center gap-3 lg:right-8"><div className="hidden text-right sm:block"><p className="text-xs font-semibold">{user.name}</p><p className="text-[10px] text-slate-500">{user.organization||"Government / Disaster Management"}</p></div><button onClick={onLogout} className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-black/20 text-slate-500 hover:text-white"><LogOut size={16}/></button></div>}
