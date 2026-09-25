@@ -53,7 +53,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
       title="AI Response Assistant"
       eyebrow="Grounded Command Support"
       icon={Bot}
-      className="border-cyan/25 bg-gradient-to-br from-cyan/[0.04] via-surface to-surface"
+      className="min-h-[calc(100vh-185px)] border-cyan/20 bg-surface"
     >
       <div className="mb-4 flex items-start gap-3 rounded-lg border border-cyan/15 bg-cyan/[0.04] p-3">
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-cyan/10 text-cyan">
@@ -68,7 +68,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
         <ShieldCheck size={14} className="ml-auto shrink-0 text-safe" />
       </div>
 
-      <div className="max-h-72 space-y-3 overflow-y-auto pr-1">
+      <div className="min-h-[42vh] max-h-[58vh] space-y-4 overflow-y-auto border-y border-border/70 py-5 pr-2">
         {messages.map((message, index) => (
           <div key={index} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
             <div
@@ -104,7 +104,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
       </div>
 
       <form
-        className="mt-3 flex gap-2"
+        className="mt-5 flex gap-3"
         onSubmit={(e) => {
           e.preventDefault();
           submit();
@@ -115,12 +115,12 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Ask about this emergency response…"
           disabled={loading}
-          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-2/50 px-3 py-2.5 text-[12px] text-text-primary outline-none placeholder:text-text-tertiary focus:border-cyan/40"
+          className="min-w-0 flex-1 rounded-xl border border-border bg-base/70 px-4 py-3.5 text-sm text-text-primary outline-none placeholder:text-text-tertiary focus:border-cyan/40"
         />
         <button
           type="submit"
           disabled={!question.trim() || loading}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-cyan/15 text-cyan transition-colors hover:bg-cyan/20 disabled:cursor-not-allowed disabled:opacity-40"
+          className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-cyan/15 text-cyan transition-colors hover:bg-cyan/20 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Ask assistant"
         >
           <Send size={15} />
