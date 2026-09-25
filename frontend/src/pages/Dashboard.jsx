@@ -23,6 +23,7 @@ import DecisionPanel from "../components/DecisionPanel";
 import ResourcePanel from "../components/ResourcePanel";
 import WhatIfPanel from "../components/WhatIfPanel";
 import OperationalFeed from "../components/OperationalFeed";
+import AssistantPanel from "../components/AssistantPanel";
 
 
 const DEFAULT_INCIDENT = {
@@ -753,6 +754,21 @@ export default function Dashboard({ user, accessToken }) {
 
 
                 {/* =================================================
+                    AI ASSISTANT
+                ================================================= */}
+
+                <div className="animate-rise">
+
+                  <AssistantPanel
+                    incident={coordinationResult.incident}
+                    responsePlan={coordinationResult.response_plan}
+                    agentReports={coordinationResult.agent_reports}
+                  />
+
+                </div>
+
+
+                {/* =================================================
                     RESOURCES
                 ================================================= */}
 
@@ -768,6 +784,10 @@ export default function Dashboard({ user, accessToken }) {
                       coordinationResult
                         .response_plan
                         ?.resource_allocations
+                    }
+
+                    responsePlan={
+                      coordinationResult.response_plan
                     }
 
                   />
