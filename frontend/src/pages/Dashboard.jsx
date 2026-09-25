@@ -29,7 +29,7 @@ import AssistantPanel from "../components/AssistantPanel";
 const DEFAULT_INCIDENT = {
   incident_id: "FLOOD-001",
   incident_type: "Flood",
-  location: "Zone A",
+  location: "Chennai · Zone A",
   severity: 9,
   affected_population: 8000,
   blocked_routes: ["Route A"],
