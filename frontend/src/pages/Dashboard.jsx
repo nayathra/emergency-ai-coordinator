@@ -589,7 +589,7 @@ export default function Dashboard({ user, accessToken }) {
               <div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Response modules</p><h3 className="mt-1 text-base font-semibold text-text-primary">Open a focused workspace</h3></div><span className="text-[11px] text-text-tertiary">Select any module</span></div>
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {modules.filter((m) => m.id !== "command").map(({id,label,icon:Icon}, index) => (
-                  <button key={id} onClick={() => openModule(id)} className="group relative overflow-hidden rounded-xl border border-border bg-surface p-5 text-left transition-all duration-200 hover:border-coordinator/40 hover:bg-surface-2/50">
+                  <button key={id} onClick={() => openModule(id)} style={{ animationDelay: `${index * 55}ms` }} className="group animate-rise relative overflow-hidden rounded-xl border border-border bg-surface p-5 text-left transition-all duration-200 hover:border-coordinator/40 hover:bg-surface-2/50">
                     
                     <div className="relative flex items-start justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-coordinator ring-1 ring-border transition-all group-hover:scale-105 group-hover:ring-coordinator/30"><Icon size={18} /></span><span className="text-[10px] font-mono text-text-tertiary">0{index+1}</span></div>
                     <p className="relative mt-5 text-sm font-semibold text-text-primary">{label}</p>
