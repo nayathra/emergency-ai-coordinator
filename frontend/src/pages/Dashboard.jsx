@@ -524,7 +524,14 @@ export default function Dashboard({ user, accessToken }) {
           <>
 
 
-            {user?.role === "government" && accessToken && (\n\n              <OperationalFeed accessToken={accessToken} onRecalculate={handleRunLiveCoordination} />\n\n            )}\n\n\n            {/* =================================================
+            {user?.role === "government" && accessToken && (
+
+              <OperationalFeed accessToken={accessToken} onRecalculate={handleRunLiveCoordination} />
+
+            )}
+
+
+            {/* =================================================
                 INCIDENT OVERVIEW
             ================================================= */}
 
