@@ -40,6 +40,7 @@ export function runCoordination(incident){return request("/coordination/run",{me
 export function runLiveCoordination(incident, token){return request("/coordination/run-live",{method:"POST",headers:{Authorization:`Bearer ${token}`},body:JSON.stringify(incident)});}
 export function runSimulation(incident,simulatedChanges){return request("/simulation/run",{method:"POST",body:JSON.stringify({incident,simulated_changes:simulatedChanges})});}
 export function sendEmergencySMS(to,message){return request("/sms/send",{method:"POST",body:JSON.stringify({to,message})});}
+export function makeEmergencyCall(text,language="en",to=null){return request("/voice/call",{method:"POST",body:JSON.stringify({text,language,...(to?{to}:{})})});}
 export function getOperationalFeed(token){return request("/auth/operational-feed",{method:"GET",headers:{Authorization:`Bearer ${token}`}});}
 export async function speakText(text,language="en"){
   let response;
