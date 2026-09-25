@@ -572,9 +572,9 @@ export default function Dashboard({ user, accessToken }) {
                   <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-safe"><span className="h-2 w-2 animate-pulse rounded-full bg-safe" /> Live response map</div>
                   <h3 className="mt-1 text-base font-semibold text-text-primary">Situational awareness</h3>
                 </div>
-                <div className="h-[430px]"><EmergencyMap /></div>
+                <div className="h-[min(52vh,560px)] min-h-[480px]"><EmergencyMap /></div>
               </div>
-              <div className="rounded-3xl border border-coordinator/20 bg-gradient-to-br from-coordinator/[0.1] to-surface p-5 shadow-2xl shadow-coordinator/5">
+              <div className="rounded-2xl border border-coordinator/20 bg-surface p-6 shadow-xl shadow-black/10">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-coordinator">AI-assisted response command</p>
                 <div className="mt-5 flex items-center justify-between">
                   <div><p className="text-xs text-text-tertiary">Overall priority</p><p className="mt-1 text-4xl font-bold text-text-primary">{coordinationResult.response_plan?.overall_priority ?? "—"}<span className="text-base text-text-tertiary">/10</span></p></div>
@@ -589,8 +589,8 @@ export default function Dashboard({ user, accessToken }) {
               <div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Response modules</p><h3 className="mt-1 text-base font-semibold text-text-primary">Open a focused workspace</h3></div><span className="text-[11px] text-text-tertiary">Select any module</span></div>
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {modules.filter((m) => m.id !== "command").map(({id,label,icon:Icon}, index) => (
-                  <button key={id} onClick={() => openModule(id)} className="group relative overflow-hidden rounded-2xl border border-border bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-coordinator/40 hover:shadow-xl hover:shadow-coordinator/10">
-                    <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-coordinator/10 blur-2xl transition-all duration-500 group-hover:bg-coordinator/20" />
+                  <button key={id} onClick={() => openModule(id)} className="group relative overflow-hidden rounded-xl border border-border bg-surface p-5 text-left transition-all duration-200 hover:border-coordinator/40 hover:bg-surface-2/50">
+                    
                     <div className="relative flex items-start justify-between"><span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2 text-coordinator ring-1 ring-border transition-all group-hover:scale-105 group-hover:ring-coordinator/30"><Icon size={18} /></span><span className="text-[10px] font-mono text-text-tertiary">0{index+1}</span></div>
                     <p className="relative mt-5 text-sm font-semibold text-text-primary">{label}</p>
                     <p className="relative mt-1 text-[11px] leading-5 text-text-tertiary">Open focused view <ArrowUpRight size={12} className="ml-1 inline transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></p>
@@ -604,23 +604,23 @@ export default function Dashboard({ user, accessToken }) {
   };
 
   const ModuleHeader = ({ eyebrow, title, description, icon: Icon }) => (
-    <div className="mb-5 flex flex-col gap-4 rounded-3xl border border-border bg-surface p-5 shadow-xl sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-border bg-surface px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-coordinator/10 text-coordinator ring-1 ring-coordinator/15"><Icon size={21} /></span>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-coordinator/20 bg-coordinator/[0.07] text-coordinator"><Icon size={20} /></span>
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-coordinator">{eyebrow}</p>
           <h2 className="mt-1 text-xl font-bold tracking-tight text-text-primary">{title}</h2>
           <p className="mt-1 max-w-2xl text-xs leading-5 text-text-secondary">{description}</p>
         </div>
       </div>
-      <button onClick={() => openModule("command")} className="flex items-center justify-center gap-2 rounded-xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-all hover:border-coordinator/30 hover:text-text-primary"><LayoutDashboard size={14} /> Command Center</button>
+      <button onClick={() => openModule("command")} className="flex items-center justify-center gap-2 rounded-lg border border-border bg-base/30 px-3.5 py-2.5 text-xs font-semibold text-text-secondary transition-colors hover:border-coordinator/30 hover:text-text-primary"><LayoutDashboard size={14} /> Command Center</button>
     </div>
   );
 
   return (
     <div className="min-h-screen bg-base">
       <div className="flex min-h-screen">
-        <aside className="sticky top-0 hidden h-screen w-[250px] shrink-0 border-r border-border bg-surface/80 backdrop-blur-xl lg:flex lg:flex-col">
+        <aside className="sticky top-0 hidden h-screen w-[270px] shrink-0 border-r border-border bg-surface/80 backdrop-blur-xl lg:flex lg:flex-col">
           <div className="flex items-center gap-3 border-b border-border px-5 py-5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-coordinator/15 text-coordinator ring-1 ring-coordinator/20"><ShieldAlert size={19} /></span>
             <div><p className="text-sm font-bold tracking-tight text-text-primary">Emergency AI</p><p className="text-[10px] text-text-tertiary">Coordinator · v2.0</p></div>
@@ -648,7 +648,7 @@ export default function Dashboard({ user, accessToken }) {
 
         <div className="min-w-0 flex-1">
           <header className="sticky top-0 z-30 border-b border-border bg-base/85 backdrop-blur-xl">
-            <div className="flex min-h-[68px] items-center justify-between gap-3 px-4 sm:px-6">
+            <div className="flex min-h-[74px] items-center justify-between gap-3 px-4 sm:px-6">
               <div className="flex min-w-0 items-center gap-3 lg:hidden">
                 <span className="grid h-9 w-9 place-items-center rounded-lg bg-coordinator/15 text-coordinator"><ShieldAlert size={17} /></span>
                 <div className="min-w-0"><p className="truncate text-sm font-bold text-text-primary">Emergency AI Coordinator</p><p className="text-[10px] text-text-tertiary">Command interface</p></div>
@@ -666,7 +666,7 @@ export default function Dashboard({ user, accessToken }) {
             </div>
           </header>
 
-          <main className="mx-auto max-w-[1500px] space-y-5 px-4 py-5 sm:px-6 sm:py-7">
+          <main className="mx-auto w-full space-y-6 px-5 py-6 sm:px-7 lg:px-9 xl:px-10 2xl:px-12">
             {error && (
               <div className="animate-rise flex items-start gap-3 rounded-2xl border border-critical/30 bg-critical/10 p-4">
                 <Radio size={16} className="mt-0.5 shrink-0 text-critical" />
