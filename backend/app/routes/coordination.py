@@ -37,26 +37,6 @@ def _latest_updates(updates):
     )
 
 
-def _latest_updates(updates):
-    latest = {}
-    for update in updates:
-        key = (
-            update.get("role", ""),
-            update.get("organization", ""),
-            update.get("metric", "").strip().lower(),
-        )
-        current = latest.get(key)
-        if current is None or update.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)) > current.get(
-            "updated_at", datetime.min.replace(tzinfo=timezone.utc)
-        ):
-            latest[key] = update
-    return sorted(
-        latest.values(),
-        key=lambda item: item.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)),
-        reverse=True,
-    )
-
-
 def _apply_live_updates(incident, updates):
     applied = []
 
