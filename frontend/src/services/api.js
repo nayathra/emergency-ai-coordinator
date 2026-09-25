@@ -37,7 +37,7 @@ async function request(path, options = {}) {
 
 export function healthCheck(){return request("/health",{method:"GET"});}
 export function runCoordination(incident){return request("/coordination/run",{method:"POST",body:JSON.stringify(incident)});}
-export function runSimulation(incident,simulatedChanges){return request("/simulation/run",{method:"POST",body:JSON.stringify({incident,simulated_changes:simulatedChanges})});}
+export function runLiveCoordination(incident, token){return request("/coordination/run-live",{method:"POST",headers:{Authorization:`Bearer ${token}`},body:JSON.stringify(incident)});}\nexport function runSimulation(incident,simulatedChanges){return request("/simulation/run",{method:"POST",body:JSON.stringify({incident,simulated_changes:simulatedChanges})});}
 export function sendEmergencySMS(to,message){return request("/sms/send",{method:"POST",body:JSON.stringify({to,message})});}
 export function getOperationalFeed(token){return request("/auth/operational-feed",{method:"GET",headers:{Authorization:`Bearer ${token}`}});}
 export async function speakText(text,language="en"){
