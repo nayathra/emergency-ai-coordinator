@@ -35,7 +35,11 @@ export default function ConflictPanel({ detected, resolved }) {
   const hasResolved = resolved && resolved.length > 0;
 
   return (
-    <Panel title="Conflict Detection" eyebrow="Coordination Engine" icon={AlertTriangle}>
+    <Panel title="Conflict Resolution" eyebrow="Cross-Agency Coordination Engine" icon={AlertTriangle} className="border-critical/20">
+      <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-surface-2/40 px-4 py-3">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-critical"/>
+        <p className="text-[11px] text-text-secondary"><span className="font-semibold text-text-primary">Conflict engine active.</span> Recommendations are reconciled against route, resource and safety constraints before the response plan is produced.</p>
+      </div>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div>
           <div className="mb-3 flex items-center gap-2">
