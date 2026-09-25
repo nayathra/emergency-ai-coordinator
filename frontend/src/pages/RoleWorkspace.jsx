@@ -32,9 +32,49 @@ export default function RoleWorkspace({session,user,onLogout}) {
   const [value,setValue]=useState("");
   const [note,setNote]=useState("");
   const [updateState,setUpdateState]=useState("idle");
+  const [scenarioSeed,setScenarioSeed]=useState(false);
   const meta=ROLE_META[user.role];
   if(user.role==="government") return <div className="relative"><GovernmentShell user={user} onLogout={onLogout}/><Dashboard user={user} accessToken={session.access_token}/></div>;
   const Icon=meta.icon, cards=DATA[user.role];
+
+  const seedBiharScenario = async () => {
+    setUpdateState("loading");
+    const updates = {
+      hospital: [
+        ["ambulances", "2", "Simulation input: 2 ambulances available; medical demand elevated in the Bhagalpur response zone."],
+        ["beds", "18", "Simulation input: emergency beds available for coordinated patient distribution."],
+        ["medical supplies", "74%", "Simulation input: essential medical stock at 74%."]
+      ],
+      police: [
+        ["blocked route", "Route A", "Simulation input: Route A restricted for emergency access."],
+        ["open routes", "Route B, Route C", "Simulation input: alternative corridors available for coordinated evacuation."],
+        ["evacuation status", "Zone A in progress", "Simulation input for the Bihar flood response exercise."]
+      ],
+      transport: [
+        ["emergency vehicles", "6", "Simulation input: 6 emergency vehicles available."],
+        ["route availability", "Route B open", "Simulation input: Route B is the preferred alternative corridor."],
+        ["dispatch capacity", "2 vehicles", "Simulation input: limited immediate dispatch capacity."]
+      ],
+      ngo: [
+        ["shelters", "2", "Simulation input: 2 active shelter sites in the operational zone."],
+        ["food / water stock", "78%", "Simulation input: relief stock at 78%."],
+        ["open requests", "9", "Simulation input: 9 open relief requests, 4 high priority."]
+      ],
+    };
+
+    try {
+      for (const [role, roleUpdates] of Object.entries(updates)) {
+        if (user.role !== role) continue;
+        for (const [metric, value, note] of roleUpdates) {
+          await updateResource(session.access_token, { metric, value, note });
+        }
+      }
+      setScenarioSeed(true);
+      setUpdateState("success");
+    } catch (err) {
+      setUpdateState(err.message || "Unable to seed scenario updates.");
+    }
+  };
 
   const submitUpdate=async(e)=>{
     e.preventDefault(); setUpdateState("loading");
@@ -48,7 +88,8 @@ export default function RoleWorkspace({session,user,onLogout}) {
       <div className="mb-8 rounded-[26px] border border-[#243653] bg-gradient-to-br from-[#10203a] via-[#0d1727] to-[#09111d] p-8 shadow-[0_24px_70px_rgba(0,0,0,.24)] lg:flex lg:items-end lg:justify-between"><div><div className="mb-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.2em] text-[#35d9d1]"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#35d9d1]"/>Live response network</div><h1 className="text-3xl font-semibold tracking-[-.03em]">{meta.title}</h1><p className="mt-2 text-sm text-[#7d90aa]">{meta.subtitle}</p></div><button onClick={()=>setOpenCoordinator(true)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#4f8cff] px-4 py-2.5 text-xs font-semibold shadow-lg shadow-indigo-950/30 hover:bg-[#6aa0ff]">Open Coordination Center <ArrowRight size={15}/></button></div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(([label,value,note,CardIcon])=><div key={label} className="rounded-[24px] border border-[#243653] bg-gradient-to-br from-[#122139] to-[#0d1726] p-6 shadow-[0_20px_60px_rgba(0,0,0,.18)]"><div className="flex items-start justify-between"><div className="grid h-9 w-9 place-items-center rounded-xl bg-[#16243a] text-[#a7b7ca]"><CardIcon size={17}/></div><span className="text-[9px] font-semibold uppercase tracking-wider text-[#35d9d1]">Live</span></div><p className="mt-5 text-4xl font-semibold tracking-tight text-white">{value}</p><p className="mt-1 text-xs font-medium text-[#c6d3e2]">{label}</p><p className="mt-1 text-[10px] text-[#647894]">{note}</p></div>)}</div>
       <div className="mt-5 grid gap-5 lg:grid-cols-[1.35fr_.65fr]"><section className="rounded-2xl rounded-[24px] border border-[#243653] bg-gradient-to-br from-[#122139] to-[#0d1726] p-6 shadow-[0_20px_60px_rgba(0,0,0,.18)]"><div className="flex items-center justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#647894]">Current incident</p><h2 className="mt-1 text-lg font-semibold">FLOOD-001 · Zone A</h2></div><span className="rounded-full border border-[#d8b15a]/25 bg-[#d8b15a]/7 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#e5c46f]">Severity 9 · Critical</span></div><div className="mt-6 grid gap-3 sm:grid-cols-3">{[["8,000","affected population"],["2","ambulances available"],["1","route blocked"]].map(([v,l])=><div key={l} className="rounded-xl border border-[#243653] bg-[#0b1422] p-4"><p className="text-xl font-semibold">{v}</p><p className="mt-1 text-[10px] uppercase tracking-wider text-[#647894]">{l}</p></div>)}</div><div className="mt-5 rounded-xl border border-[#4f8cff]/20 bg-[#4f8cff]/7 p-4"><div className="flex items-center gap-2 text-xs font-semibold text-[#8dbbff]"><Radio size={14}/>Coordinator update</div><p className="mt-2 text-sm leading-6 text-[#a7b7ca]">Route A is blocked. Emergency response should use active corridors while medical, evacuation and relief needs are coordinated across agencies.</p></div></section>
-        <section className="rounded-2xl rounded-[24px] border border-[#243653] bg-gradient-to-br from-[#122139] to-[#0d1726] p-6 shadow-[0_20px_60px_rgba(0,0,0,.18)]"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#647894]">Operations</p><div className="mt-4 space-y-2"><button onClick={()=>setShowUpdate(true)} className="flex w-full items-center justify-between rounded-xl border border-[#4f8cff]/25 bg-[#4f8cff]/7 px-4 py-3 text-left text-xs font-semibold text-[#8dbbff] hover:bg-[#6aa0ff]/10">Update resource availability <ArrowRight size={14}/></button>{["Acknowledge coordinator request","Share field status"].map(item=><button key={item} className="flex w-full items-center justify-between rounded-xl border border-[#243653] bg-[#0b1422] px-4 py-3 text-left text-xs font-medium text-[#c6d3e2] hover:border-[#4f8cff]/25">{item}<ArrowRight size={14} className="text-[#647894]"/></button>)}</div><div className="mt-5 flex items-center gap-2 text-[10px] text-[#35d9d1]"><CheckCircle2 size={13}/>Updates are shared with authorized coordinators.</div></section></div>
+        <section className="rounded-2xl rounded-[24px] border border-[#243653] bg-gradient-to-br from-[#122139] to-[#0d1726] p-6 shadow-[0_20px_60px_rgba(0,0,0,.18)]"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#647894]">Operations</p><div className="mt-4 space-y-2"><button onClick={()=>setShowUpdate(true)} className="flex w-full items-center justify-between rounded-xl border border-[#4f8cff]/25 bg-[#4f8cff]/7 px-4 py-3 text-left text-xs font-semibold text-[#8dbbff] hover:bg-[#6aa0ff]/10">Update resource availability <ArrowRight size={14}/></button>
+{user.role !== "citizen" && <button onClick={seedBiharScenario} disabled={updateState==="loading"} className="flex w-full items-center justify-between rounded-xl border border-[#d8b15a]/25 bg-[#d8b15a]/7 px-4 py-3 text-left text-xs font-semibold text-[#e5c46f] hover:bg-[#d8b15a]/10">{updateState==="loading"?"Seeding Bihar scenario…":scenarioSeed?"✓ Bihar scenario updates shared":"Seed Bihar demo inputs"} <Radio size={14}/></button>}{["Acknowledge coordinator request","Share field status"].map(item=><button key={item} className="flex w-full items-center justify-between rounded-xl border border-[#243653] bg-[#0b1422] px-4 py-3 text-left text-xs font-medium text-[#c6d3e2] hover:border-[#4f8cff]/25">{item}<ArrowRight size={14} className="text-[#647894]"/></button>)}</div><div className="mt-5 flex items-center gap-2 text-[10px] text-[#35d9d1]"><CheckCircle2 size={13}/>Updates are shared with authorized coordinators.</div></section></div>
     </main>
     {showUpdate&&<div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-5 backdrop-blur-sm"><form onSubmit={submitUpdate} className="w-full max-w-md rounded-3xl border border-[#2d4566] bg-[#101a2b] p-6 shadow-2xl"><div className="mb-5"><p className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#69a2ff]">Operational update</p><h2 className="mt-2 text-xl font-semibold">Share current field status</h2><p className="mt-1 text-xs leading-5 text-[#7d90aa]">This update is written to the authenticated organization profile.</p></div><div className="space-y-4"><select required value={metric} onChange={e=>setMetric(e.target.value)} className="input"><option value="">Select operational metric</option>{(FIELD_OPTIONS[user.role]||[]).map(([key,label])=><option key={key} value={key}>{label}</option>)}</select><input required value={value} onChange={e=>setValue(e.target.value)} placeholder={(FIELD_OPTIONS[user.role]||[]).find(([key])=>key===metric)?.[2] || "Enter current status"} className="input"/><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="Additional note" className="input min-h-24 resize-none"/></div>{updateState!=="idle"&&updateState!=="loading"&&<p className={`mt-4 text-xs ${updateState==="success"?"text-[#35d9d1]":"text-[#e5c46f]"}`}>{updateState==="success"?"✓ Operational update shared successfully.":updateState}</p>}<div className="mt-5 flex gap-2"><button type="button" onClick={()=>{setShowUpdate(false);setUpdateState("idle")}} className="flex-1 rounded-xl border border-[#2d4566] px-4 py-3 text-xs font-semibold text-[#a7b7ca]">Cancel</button><button disabled={updateState==="loading"} className="flex-1 rounded-xl bg-[#4f8cff] px-4 py-3 text-xs font-semibold">{updateState==="loading"?"Sharing…":"Share update"}</button></div></form><style>{`.input{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);padding:.75rem .85rem;font-size:.8rem;color:#fff;outline:none}.input::placeholder{color:#475569}.input:focus{border-color:rgba(129,140,248,.5)}`}</style></div>}
     {openCoordinator&&<div className="fixed inset-0 z-50 overflow-auto bg-[#070b14]"><div className="sticky top-0 z-50 flex justify-end border-b border-[#243653] bg-[#0b1320]/94 px-5 py-3 backdrop-blur-xl"><button onClick={()=>setOpenCoordinator(false)} className="rounded-xl border border-[#2d4566] px-4 py-2 text-xs font-semibold text-[#c6d3e2]">Back to role workspace</button></div><Dashboard user={user} accessToken={session.access_token}/></div>}
