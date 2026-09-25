@@ -381,13 +381,21 @@ export default function Dashboard({ user, accessToken }) {
   const renderModule = () => {
     if (!coordinationResult) {
       return (
-        <section className="animate-rise grid min-h-[68vh] place-items-center rounded-3xl border border-border bg-surface/70 p-8">
-          <IncidentIntakeForm
-            draft={incidentDraft}
-            onChange={setIncidentDraft}
-            onSubmit={handleRunCoordination}
-            submitting={loading}
-          />
+        <section className="command-grid-bg animate-rise overflow-hidden rounded-[28px] border border-border bg-[#09111e] shadow-[0_30px_100px_rgba(0,0,0,.32)]">
+          <div className="grid min-h-[calc(100vh-150px)] lg:grid-cols-[1.05fr_1.25fr]">
+            <div className="relative flex flex-col justify-between overflow-hidden border-b border-border p-7 sm:p-10 lg:border-b-0 lg:border-r lg:p-12">
+              <div className="absolute -right-28 -top-28 h-72 w-72 rounded-full bg-coordinator/10 blur-3xl" />
+              <div className="relative">
+                <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-safe/20 bg-safe/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-safe"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-safe" /> Coordination network online</div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-gold">Emergency response intelligence</p>
+                <h1 className="mt-4 max-w-xl text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl">Coordinate the response <span className="text-coordinator">before dispatch.</span></h1>
+                <p className="mt-5 max-w-xl text-sm leading-7 text-text-secondary">Bring hospital, police, transport, relief and government signals into one operational picture. Run the coordinator only when the incident context is ready.</p>
+                <div className="mt-9 grid gap-3 sm:grid-cols-3">{[["05","specialist agents"],["01","coordinator engine"],["24/7","response model"]].map(([value,label]) => (<div key={label} className="rounded-2xl border border-border bg-white/[0.025] p-4"><p className="mono-tabular text-2xl font-semibold text-white">{value}</p><p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-text-tertiary">{label}</p></div>))}</div>
+              </div>
+              <div className="relative mt-10 rounded-2xl border border-gold/20 bg-gold/[0.045] p-5"><div className="flex items-start gap-3"><div className="mt-0.5 grid h-9 w-9 place-items-center rounded-xl border border-gold/20 bg-gold/10 text-gold"><ShieldAlert size={17}/></div><div><p className="text-xs font-semibold text-gold">Human-in-the-loop command</p><p className="mt-1 text-xs leading-5 text-text-secondary">AI recommends and explains. An authorized human remains responsible for real-world action.</p></div></div></div>
+            </div>
+            <div className="p-5 sm:p-8 lg:p-10"><IncidentIntakeForm draft={incidentDraft} onChange={setIncidentDraft} onSubmit={handleRunCoordination} submitting={loading}/></div>
+          </div>
         </section>
       );
     }
@@ -522,7 +530,7 @@ export default function Dashboard({ user, accessToken }) {
         return (
           <section className="animate-rise">
             <ModuleHeader eyebrow="SITUATIONAL AWARENESS" title="Live Response Map" description="A focused operational view of the incident location and emergency resources." icon={MapPinned} />
-            <div className="overflow-hidden rounded-3xl border border-border bg-surface shadow-2xl">
+            <div className="overflow-hidden rounded-[26px] border border-border bg-surface shadow-[0_24px_70px_rgba(0,0,0,.22)]">
               <div className="h-[min(72vh,720px)] w-full"><EmergencyMap /></div>
             </div>
           </section>
@@ -558,7 +566,7 @@ export default function Dashboard({ user, accessToken }) {
                 ["Shelters", coordinationResult.incident.available_shelters ?? "—", Home],
                 ["Blocked routes", coordinationResult.incident.blocked_routes?.length ?? 0, Route],
               ].map(([label, value, Icon]) => (
-                <div key={label} className="group rounded-2xl border border-border bg-surface p-6 transition-all hover:-translate-y-0.5 hover:border-coordinator/30 hover:shadow-lg hover:shadow-coordinator/5">
+                <div key={label} className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2/90 to-surface/90 p-6 shadow-[0_14px_40px_rgba(0,0,0,.14)] transition-all hover:-translate-y-1 hover:border-coordinator/35 hover:shadow-[0_20px_50px_rgba(25,82,170,.12)]">
                   <Icon size={16} className="text-coordinator transition-transform group-hover:scale-110" />
                   <p className="mt-4 text-[10px] uppercase tracking-widest text-text-tertiary">{label}</p>
                   <p className="mt-1 text-2xl font-bold text-text-primary">{value}</p>
@@ -574,7 +582,7 @@ export default function Dashboard({ user, accessToken }) {
                 </div>
                 <div className="h-[min(56vh,680px)] min-h-[520px]"><EmergencyMap /></div>
               </div>
-              <div className="rounded-2xl border border-coordinator/20 bg-surface p-7 shadow-xl shadow-black/10">
+              <div className="relative overflow-hidden rounded-[26px] border border-coordinator/25 bg-gradient-to-b from-[#111f34] to-surface p-7 shadow-[0_24px_70px_rgba(0,0,0,.2)]">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-coordinator">AI-assisted response command</p>
                 <div className="mt-5 flex items-center justify-between">
                   <div><p className="text-xs text-text-tertiary">Overall priority</p><p className="mt-1 text-4xl font-bold text-text-primary">{coordinationResult.response_plan?.overall_priority ?? "—"}<span className="text-base text-text-tertiary">/10</span></p></div>
@@ -589,7 +597,7 @@ export default function Dashboard({ user, accessToken }) {
               <div className="mb-3 flex items-end justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Response modules</p><h3 className="mt-1 text-base font-semibold text-text-primary">Open a focused workspace</h3></div><span className="text-[11px] text-text-tertiary">Select any module</span></div>
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {modules.filter((m) => m.id !== "command").map(({id,label,icon:Icon}, index) => (
-                  <button key={id} onClick={() => openModule(id)} style={{ animationDelay: `${index * 55}ms` }} className="group animate-rise relative overflow-hidden rounded-2xl border border-border bg-surface p-6 text-left transition-all duration-200 hover:border-coordinator/40 hover:bg-surface-2/50">
+                  <button key={id} onClick={() => openModule(id)} style={{ animationDelay: `${index * 55}ms` }} className="group animate-rise relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-surface-2/90 to-surface p-6 text-left shadow-[0_12px_34px_rgba(0,0,0,.12)] transition-all duration-200 hover:-translate-y-1 hover:border-coordinator/45 hover:shadow-[0_18px_44px_rgba(25,82,170,.16)]">
                     
                     <div className="relative flex items-start justify-between"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-surface-2 text-coordinator ring-1 ring-border transition-all group-hover:scale-105 group-hover:ring-coordinator/30"><Icon size={18} /></span><span className="text-[10px] font-mono text-text-tertiary">0{index+1}</span></div>
                     <p className="relative mt-5 text-sm font-semibold text-text-primary">{label}</p>
@@ -620,13 +628,13 @@ export default function Dashboard({ user, accessToken }) {
   return (
     <div className="min-h-screen bg-base app-shell-glow">
       <div className="flex min-h-screen">
-        <aside className="sticky top-0 hidden h-screen w-[304px] shrink-0 border-r border-border bg-surface/95 backdrop-blur-xl lg:flex lg:flex-col">
-          <div className="flex items-center gap-3 border-b border-border px-7 py-6">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl border border-coordinator/20 bg-coordinator/10 text-coordinator ring-1 ring-coordinator/10"><ShieldAlert size={21} /></span>
+        <aside className="sticky top-0 hidden h-screen w-[326px] shrink-0 border-r border-border bg-[#0b1320]/96 backdrop-blur-xl lg:flex lg:flex-col">
+          <div className="flex items-center gap-3 border-b border-border bg-white/[0.015] px-7 py-7">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl border border-coordinator/25 bg-gradient-to-br from-coordinator/20 to-gold/10 text-coordinator shadow-[0_0_30px_rgba(79,140,255,.12)]"><ShieldAlert size={21} /></span>
             <div><p className="text-[15px] font-bold tracking-tight text-text-primary">Emergency AI</p><p className="text-[10px] text-text-tertiary">Coordinator · v2.0</p></div>
           </div>
           <div className="px-5 pt-7">
-            <div className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-text-tertiary">Operations</div>
+            <div className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-gold">Operations</div>
             <nav className="space-y-2">
               {modules.map(({id,label,icon:Icon}) => (
                 <button key={id} onClick={() => openModule(id)} disabled={!coordinationResult && id !== "command"} className={`group flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-[13px] font-medium transition-all duration-200 ${activeModule === id ? "bg-coordinator/10 text-text-primary ring-1 ring-coordinator/20" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary"} disabled:cursor-not-allowed disabled:opacity-40`}>
@@ -647,7 +655,7 @@ export default function Dashboard({ user, accessToken }) {
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-30 border-b border-border bg-base/85 backdrop-blur-xl">
+          <header className="sticky top-0 z-30 border-b border-border bg-[#08111d]/88 shadow-[0_12px_40px_rgba(0,0,0,.18)] backdrop-blur-2xl">
             <div className="flex min-h-[74px] items-center justify-between gap-3 px-4 sm:px-6">
               <div className="flex min-w-0 items-center gap-3 lg:hidden">
                 <span className="grid h-9 w-9 place-items-center rounded-lg bg-coordinator/15 text-coordinator"><ShieldAlert size={17} /></span>
@@ -666,7 +674,7 @@ export default function Dashboard({ user, accessToken }) {
             </div>
           </header>
 
-          <main className="mx-auto w-full space-y-6 px-5 py-6 sm:px-7 lg:px-9 xl:px-10 2xl:px-12">
+          <main className="command-grid-bg mx-auto w-full space-y-6 px-5 py-7 sm:px-7 lg:px-9 xl:px-10 2xl:px-12">
             {error && (
               <div className="animate-rise flex items-start gap-3 rounded-2xl border border-critical/30 bg-critical/10 p-4">
                 <Radio size={16} className="mt-0.5 shrink-0 text-critical" />
