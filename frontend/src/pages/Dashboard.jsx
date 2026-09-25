@@ -622,8 +622,8 @@ export default function Dashboard({ user, accessToken }) {
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-[304px] shrink-0 border-r border-border bg-surface/95 backdrop-blur-xl lg:flex lg:flex-col">
           <div className="flex items-center gap-3 border-b border-border px-7 py-6">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-coordinator/15 text-coordinator ring-1 ring-coordinator/20"><ShieldAlert size={19} /></span>
-            <div><p className="text-sm font-bold tracking-tight text-text-primary">Emergency AI</p><p className="text-[10px] text-text-tertiary">Coordinator · v2.0</p></div>
+            <span className="grid h-12 w-12 place-items-center rounded-2xl border border-coordinator/20 bg-coordinator/10 text-coordinator ring-1 ring-coordinator/10"><ShieldAlert size={21} /></span>
+            <div><p className="text-[15px] font-bold tracking-tight text-text-primary">Emergency AI</p><p className="text-[10px] text-text-tertiary">Coordinator · v2.0</p></div>
           </div>
           <div className="px-5 pt-7">
             <div className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-text-tertiary">Operations</div>
@@ -637,7 +637,7 @@ export default function Dashboard({ user, accessToken }) {
               ))}
             </nav>
           </div>
-          <div className="mt-auto border-t border-border p-4">
+          <div className="mt-auto border-t border-border p-5">
             <div className="flex items-center gap-2 rounded-2xl border border-border bg-base/50 p-4">
               <span className={`h-2 w-2 rounded-full ${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />
               <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">System</p><p className={`text-xs font-semibold ${systemStatus === "operational" ? "text-safe" : systemStatus === "offline" ? "text-critical" : "text-text-secondary"}`}>{systemStatus === "operational" ? "Operational" : systemStatus === "offline" ? "Offline" : "Checking..."}</p></div>
