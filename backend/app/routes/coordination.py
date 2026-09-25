@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 import re
 
@@ -15,25 +17,47 @@ def _number(value):
     return int(match.group()) if match else None
 
 
+def _latest_updates(updates):
+    latest = {}
+    for update in updates:
+        key = (
+            update.get("role", ""),
+            update.get("organization", ""),
+            update.get("metric", "").strip().lower(),
+        )
+        current = latest.get(key)
+        if current is None or update.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)) > current.get(
+            "updated_at", datetime.min.replace(tzinfo=timezone.utc)
+        ):
+            latest[key] = update
+    return sorted(
+        latest.values(),
+        key=lambda item: item.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)),
+        reverse=True,
+    )
+
+
 def _apply_live_updates(incident, updates):
     applied = []
-    changed = incident.model_dump()
 
     for update in updates:
-        metric = f"{update.get('metric', '')} {update.get('note', '')}".lower()
+        role = update.get("role", "")
+        metric = update.get("metric", "").strip().lower()
         value = update.get("value", "")
+        note = update.get("note", "")
         number = _number(value)
+        source = update.get("organization") or role or "field agency"
 
-        if "ambulance" in metric and number is not None:
-            incident.available_ambulances = number
-            applied.append(f"Ambulances updated to {number} from {update.get('organization') or 'field agency'}.")
+        if role == "hospital" and metric == "ambulances" and number is not None:
+            incident.available_ambulances = max(0, number)
+            applied.append(f"Ambulances updated to {number} from {source}.")
 
-        elif "shelter" in metric and number is not None:
-            incident.available_shelters = number
-            applied.append(f"Shelters updated to {number} from {update.get('organization') or 'field agency'}.")
+        elif role == "ngo" and metric == "shelters" and number is not None:
+            incident.available_shelters = max(0, number)
+            applied.append(f"Shelters updated to {number} from {source}.")
 
-        elif ("blocked route" in metric or "route blocked" in metric) and (update.get("note") or value):
-            route_text = update.get("note") or value
+        elif role == "police" and metric == "blocked route":
+            route_text = value or note
             routes = re.findall(r"Route\s+[A-Za-z0-9-]+", route_text, flags=re.I)
             for route in routes:
                 route = route.strip()
@@ -42,12 +66,26 @@ def _apply_live_updates(incident, updates):
                 if route in incident.active_routes:
                     incident.active_routes.remove(route)
             if routes:
-                applied.append(f"Route constraint updated: {', '.join(routes)}.")
+                applied.append(f"Route constraint updated: {', '.join(routes)} from {source}.")
 
-        elif ("vehicle" in metric or "transport" in metric) and number is not None:
-            applied.append(f"Transport availability reported as {number} by {update.get('organization') or 'field agency'}.")
+        elif role == "police" and metric == "open routes":
+            routes = re.findall(r"Route\s+[A-Za-z0-9-]+", value or note, flags=re.I)
+            for route in routes:
+                route = route.strip()
+                if route in incident.blocked_routes:
+                    incident.blocked_routes.remove(route)
+                if route not in incident.active_routes:
+                    incident.active_routes.append(route)
+            if routes:
+                applied.append(f"Open routes updated: {', '.join(routes)} from {source}.")
 
-    return applied, changed
+        elif role == "transport" and metric == "emergency vehicles" and number is not None:
+            applied.append(f"Emergency vehicle availability reported as {number} by {source}.")
+
+        elif role in {"hospital", "ngo", "police", "transport", "citizen"}:
+            applied.append(f"{metric.title()} update received from {source}.")
+
+    return applied
 
 
 @router.post("/run")
@@ -79,8 +117,8 @@ def run_live_coordination(incident: Incident, user: dict = Depends(current_user)
             item["role"] = row.get("role")
             updates.append(item)
 
-    updates.sort(key=lambda item: item.get("updated_at", 0), reverse=True)
-    applied_updates, _ = _apply_live_updates(incident, updates[:50])
+    updates = _latest_updates(updates)
+    applied_updates = _apply_live_updates(incident, updates[:50])
 
     reports = run_all_agents(incident)
     response_plan = coordinate_response(incident, reports)
