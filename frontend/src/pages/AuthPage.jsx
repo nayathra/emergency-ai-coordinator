@@ -32,7 +32,7 @@ export default function AuthPage({ onAuthenticated }) {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden bg-[#07090d] text-white">
+    <div className="min-h-screen overflow-hidden bg-[#0f1219] text-white">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(99,102,241,.18),transparent_34%),radial-gradient(circle_at_85%_90%,rgba(20,184,166,.10),transparent_30%)]" />
       <div className="relative mx-auto grid min-h-screen max-w-[1500px] lg:grid-cols-[1.05fr_.95fr]">
         <section className="hidden flex-col justify-between p-10 lg:flex xl:p-16">
@@ -55,7 +55,7 @@ export default function AuthPage({ onAuthenticated }) {
         <section className="flex items-center justify-center px-5 py-8 sm:px-8">
           <div className="w-full max-w-[620px]">
             <div className="mb-7 flex items-center gap-3 lg:hidden"><div className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-400/10 text-indigo-300"><ShieldAlert size={20}/></div><div><p className="text-sm font-semibold">Emergency AI Coordinator</p><p className="text-[11px] text-slate-500">Secure response network</p></div></div>
-            <div className="rounded-[28px] border border-white/10 bg-[#0d1016]/90 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">
+            <div className="rounded-[28px] border border-white/10 bg-[#191e29]/90 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">
               <div className="mb-7 flex items-start justify-between"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-indigo-300">{mode==="login"?"Secure access":"Create responder profile"}</p><h2 className="mt-2 text-2xl font-semibold tracking-tight">{mode==="login"?"Welcome back":"Join the response network"}</h2><p className="mt-2 text-sm leading-6 text-slate-500">{mode==="login"?"Sign in to access the operational workspace assigned to your role.":"Choose your operational role so the platform can show the right controls and information."}</p></div><LockKeyhole className="text-slate-600" size={20}/></div>
 
               <form onSubmit={submit} className="space-y-5">
