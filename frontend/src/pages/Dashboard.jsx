@@ -21,6 +21,7 @@ import ConflictPanel from "../components/ConflictPanel";
 import DecisionPanel from "../components/DecisionPanel";
 import ResourcePanel from "../components/ResourcePanel";
 import WhatIfPanel from "../components/WhatIfPanel";
+import OperationalFeed from "../components/OperationalFeed";
 
 
 const DEFAULT_INCIDENT = {
@@ -37,7 +38,7 @@ const DEFAULT_INCIDENT = {
 };
 
 
-export default function Dashboard() {
+export default function Dashboard({ user, accessToken }) {
 
   // =========================================================
   // INCIDENT
