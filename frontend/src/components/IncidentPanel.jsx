@@ -108,8 +108,8 @@ raw
 );
 
 return (
-<Panel title="Incident Intake" eyebrow="Configure Scenario" icon={MapPin}>
-<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<Panel title="Incident Intake" eyebrow="LIVE SCENARIO CONFIGURATION" icon={MapPin} className="h-full command-glass">
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 <LabeledInput
 label="Incident ID"
 value={draft.incident_id}
@@ -175,7 +175,7 @@ onChange={(v) => updateList("urgent_needs", v)}
 <button  
     onClick={onSubmit}  
     disabled={submitting}  
-    className="mt-6 inline-flex items-center gap-2 rounded-lg bg-coordinator px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-60"  
+    className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-coordinator/30 bg-gradient-to-r from-coordinator to-[#3d72df] px-5 py-3.5 text-[13px] font-semibold text-white shadow-lg shadow-coordinator/20 transition-all hover:-translate-y-0.5 hover:shadow-coordinator/30 disabled:cursor-not-allowed disabled:opacity-60"  
   >  
     {submitting && <Loader2 size={15} className="animate-spin" />}  
     {submitting ? "Consulting Emergency Agents\u2026" : "Run Coordination Analysis"}  
@@ -187,7 +187,7 @@ onChange={(v) => updateList("urgent_needs", v)}
 
 function LabeledInput({ label, value, onChange, type = "text", className = "", ...rest }) {
 return (
-<label className={'block ${className}'}>
+<label className={`block ${className}`}>
 <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-wider text-text-tertiary">
 {label}
 </span>
@@ -195,7 +195,7 @@ return (
 type={type}
 value={value}
 onChange={(e) => onChange(e.target.value)}
-className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-[13px] text-text-primary outline-none transition-colors focus:border-coordinator"
+className="w-full rounded-xl border border-border bg-[#101a2b] px-3.5 py-3 text-[13px] text-text-primary outline-none transition-all placeholder:text-text-tertiary focus:border-coordinator focus:ring-2 focus:ring-coordinator/10"
 {...rest}
 />
 </label>
