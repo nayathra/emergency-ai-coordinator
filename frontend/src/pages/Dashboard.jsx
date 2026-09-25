@@ -664,91 +664,55 @@ export default function Dashboard({ user, accessToken }) {
                       MULTILINGUAL VOICE
                   ================================================= */}
 
-                  <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+                  <div className="mt-4 rounded-xl border border-coordinator/20 bg-coordinator/[0.04] p-4">
 
-                    {/* LANGUAGE SELECTOR */}
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
+                        <span className="grid h-9 w-9 place-items-center rounded-lg bg-coordinator/10 text-coordinator text-base">
+                          {voiceLoading ? "⏳" : "🔊"}
+                        </span>
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-coordinator">Voice Decision Briefing</p>
+                          <p className="mt-0.5 text-[11px] text-text-tertiary">Convert the coordinator's current decision into a spoken briefing.</p>
+                        </div>
+                      </div>
 
-                      <label
-                        htmlFor="voice-language"
-                        className="text-[11px] font-medium text-text-tertiary"
-                      >
-                        Voice Language
-                      </label>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <label htmlFor="voice-language" className="sr-only">Voice Language</label>
+                        <select
+                          id="voice-language"
+                          value={voiceLanguage}
+                          onChange={(e) => {
+                            setVoiceLanguage(e.target.value);
+                            setVoiceError(null);
+                          }}
+                          disabled={voiceLoading}
+                          className="rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-text-primary outline-none focus:border-coordinator/50 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <option value="en">English</option>
+                          <option value="ta">தமிழ்</option>
+                          <option value="hi">हिन्दी</option>
+                        </select>
 
-                      <select
-                        id="voice-language"
-                        value={voiceLanguage}
-                        onChange={(e) => {
-
-                          setVoiceLanguage(
-                            e.target.value
-                          );
-
-                          setVoiceError(null);
-
-                        }}
-                        disabled={voiceLoading}
-                        className="rounded-lg border border-border bg-surface px-3 py-2 text-[12px] font-medium text-text-primary outline-none transition-all focus:border-coordinator/50 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-
-                        <option value="en">
-                          English
-                        </option>
-
-                        <option value="ta">
-                          தமிழ்
-                        </option>
-
-                        <option value="hi">
-                          हिन्दी
-                        </option>
-
-                      </select>
+                        <button
+                          onClick={handleSpeakDecision}
+                          disabled={voiceLoading}
+                          className="flex items-center gap-2 rounded-lg bg-coordinator px-4 py-2 text-[12px] font-semibold text-white transition-all hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {voiceLoading ? "Generating briefing..." : "Speak Decision"}
+                        </button>
+                      </div>
 
                     </div>
 
-
-                    {/* SPEAK BUTTON */}
-
-                    <button
-                      onClick={
-                        handleSpeakDecision
-                      }
-                      disabled={voiceLoading}
-                      className="flex items-center gap-2 rounded-lg border border-coordinator/30 bg-coordinator/10 px-4 py-2 text-[12px] font-semibold text-coordinator transition-all hover:bg-coordinator/20 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-
-                      <span className="text-base">
-
-                        {voiceLoading
-                          ? "⏳"
-                          : "🔊"}
-
-                      </span>
-
-
-                      {voiceLoading
-                        ? "Generating voice..."
-                        : "Speak Decision"}
-
-                    </button>
+                    {voiceError && (
+                      <p className="mt-3 rounded-lg border border-critical/20 bg-critical/5 px-3 py-2 text-[11px] text-critical">
+                        {voiceError}
+                      </p>
+                    )}
 
                   </div>
-
-
-                  {/* VOICE ERROR */}
-
-                  {voiceError && (
-
-                    <p className="mt-2 text-right text-[11px] text-critical">
-
-                      {voiceError}
-
-                    </p>
-
-                  )}
 
                 </div>
 
