@@ -7,6 +7,7 @@ import {
   runLiveCoordination,
   runSimulation,
   speakText,
+  makeEmergencyCall,
 } from "../services/api";
 
 import CoordinationFlow from "../components/CoordinationFlow";
@@ -107,6 +108,9 @@ export default function Dashboard({ user, accessToken }) {
 
   const [voiceError, setVoiceError] =
     useState(null);
+
+  const [callLoading, setCallLoading] = useState(false);
+  const [callStatus, setCallStatus] = useState(null);
 
 
   // =========================================================
@@ -358,6 +362,34 @@ export default function Dashboard({ user, accessToken }) {
   };
 
 
+  const handleEmergencyCall = async () => {
+    if (!coordinationResult?.response_plan) return;
+
+    setCallLoading(true);
+    setCallStatus(null);
+    setVoiceError(null);
+
+    try {
+      const plan = coordinationResult.response_plan;
+      const text = [
+        "Emergency response briefing.",
+        `Bihar flood response zone: ${coordinationResult.incident.location}.`,
+        `Overall priority is ${plan.overall_priority} out of 10.`,
+        ...(plan.selected_actions?.length
+          ? ["Priority actions.", ...plan.selected_actions.slice(0, 4)]
+          : []),
+        "This is an AI-assisted decision-support briefing. Human authorization is required for operational action.",
+      ].join(" ");
+
+      const result = await makeEmergencyCall(text, voiceLanguage);
+      setCallStatus(result);
+    } catch (err) {
+      setCallStatus({ error: err?.message || "Unable to initiate the emergency briefing call." });
+    } finally {
+      setCallLoading(false);
+    }
+  };
+
   // =========================================================
   // COORDINATION PHASE
   // =========================================================
@@ -484,14 +516,25 @@ export default function Dashboard({ user, accessToken }) {
                     <option value="ta">தமிழ்</option>
                     <option value="hi">हिन्दी</option>
                   </select>
-                  <button
-                    onClick={handleSpeakDecision}
-                    disabled={voiceLoading}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-coordinator px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-coordinator/20 transition-all hover:-translate-y-0.5 hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {voiceLoading ? <><LoaderCircle className="animate-spin" size={16} /> Generating...</> : <><Volume2 size={16} /> Speak Decision</>}
-                  </button>
+                  <div className="grid gap-2">
+                    <button
+                      onClick={handleSpeakDecision}
+                      disabled={voiceLoading || callLoading}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-coordinator px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-coordinator/20 transition-all hover:-translate-y-0.5 hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {voiceLoading ? <><LoaderCircle className="animate-spin" size={16} /> Generating...</> : <><Volume2 size={16} /> Speak Decision</>}
+                    </button>
+                    <button
+                      onClick={handleEmergencyCall}
+                      disabled={voiceLoading || callLoading}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-gold/30 bg-gold/[0.08] px-4 py-3 text-sm font-semibold text-gold transition-all hover:-translate-y-0.5 hover:bg-gold/[0.14] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {callLoading ? <><LoaderCircle className="animate-spin" size={16} /> Initiating call...</> : <><Radio size={16} /> Call authorized number</>}
+                    </button>
+                  </div>
                   {voiceError && <p className="mt-3 rounded-xl border border-critical/20 bg-critical/5 p-3 text-xs text-critical">{voiceError}</p>}
+                  {callStatus?.error && <p className="mt-3 rounded-xl border border-critical/20 bg-critical/5 p-3 text-xs text-critical">{callStatus.error}</p>}
+                  {callStatus?.success && <p className="mt-3 rounded-xl border border-safe/20 bg-safe/5 p-3 text-xs text-safe">Call initiated to the configured authorized number.</p>}
                 </div>
               </div>
             </div>
