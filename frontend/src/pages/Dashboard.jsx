@@ -629,7 +629,7 @@ export default function Dashboard({ user, accessToken }) {
             <div className="mb-2 px-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-text-tertiary">Operations</div>
             <nav className="space-y-1">
               {modules.map(({id,label,icon:Icon}) => (
-                <button key={id} onClick={() => openModule(id)} disabled={!coordinationResult && id !== "command"} className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-medium transition-all duration-200 \${activeModule === id ? "bg-coordinator/10 text-text-primary ring-1 ring-coordinator/20" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary"} disabled:cursor-not-allowed disabled:opacity-40`}>
+                <button key={id} onClick={() => openModule(id)} disabled={!coordinationResult && id !== "command"} className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-medium transition-all duration-200 ${activeModule === id ? "bg-coordinator/10 text-text-primary ring-1 ring-coordinator/20" : "text-text-secondary hover:bg-surface-2 hover:text-text-primary"} disabled:cursor-not-allowed disabled:opacity-40`}>
                   <Icon size={16} className={activeModule === id ? "text-coordinator" : "text-text-tertiary transition-transform group-hover:scale-105"} />
                   <span>{label}</span>
                   {activeModule === id && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-coordinator shadow-[0_0_12px_rgba(109,106,246,0.8)]" />}
@@ -639,8 +639,8 @@ export default function Dashboard({ user, accessToken }) {
           </div>
           <div className="mt-auto border-t border-border p-4">
             <div className="flex items-center gap-2 rounded-xl border border-border bg-base/40 p-3">
-              <span className={`h-2 w-2 rounded-full \${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />
-              <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">System</p><p className={`text-xs font-semibold \${systemStatus === "operational" ? "text-safe" : systemStatus === "offline" ? "text-critical" : "text-text-secondary"}`}>{systemStatus === "operational" ? "Operational" : systemStatus === "offline" ? "Offline" : "Checking..."}</p></div>
+              <span className={`h-2 w-2 rounded-full ${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />
+              <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-widest text-text-tertiary">System</p><p className={`text-xs font-semibold ${systemStatus === "operational" ? "text-safe" : systemStatus === "offline" ? "text-critical" : "text-text-secondary"}`}>{systemStatus === "operational" ? "Operational" : systemStatus === "offline" ? "Offline" : "Checking..."}</p></div>
             </div>
             <p className="mt-3 truncate px-1 text-[10px] text-text-tertiary">{user?.organization || user?.name || "Authorized operator"}</p>
           </div>
@@ -658,11 +658,11 @@ export default function Dashboard({ user, accessToken }) {
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => openModule("voice")} disabled={!coordinationResult} className="group flex items-center gap-2 rounded-full border border-coordinator/25 bg-coordinator/5 px-3 py-2 text-[11px] font-semibold text-text-primary transition-all hover:-translate-y-0.5 hover:border-coordinator/50 hover:bg-coordinator/10 disabled:cursor-not-allowed disabled:opacity-40"><span className="grid h-5 w-5 place-items-center rounded-full bg-coordinator/15 text-coordinator"><Volume2 size={11} /></span><span className="hidden sm:inline">Voice briefing</span></button>
-                <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-2 text-[10px] font-semibold uppercase tracking-wider"><span className={`h-1.5 w-1.5 rounded-full \${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />{systemStatus === "operational" ? "Live" : systemStatus === "offline" ? "Offline" : "Checking"}</div>
+                <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-2 text-[10px] font-semibold uppercase tracking-wider"><span className={`h-1.5 w-1.5 rounded-full ${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />{systemStatus === "operational" ? "Live" : systemStatus === "offline" ? "Offline" : "Checking"}</div>
               </div>
             </div>
             <div className="flex gap-2 overflow-x-auto border-t border-border px-4 py-2 lg:hidden">
-              {modules.map(({id,label,icon:Icon}) => <button key={id} onClick={() => openModule(id)} disabled={!coordinationResult && id !== "command"} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-semibold transition-all \${activeModule === id ? "border-coordinator/40 bg-coordinator/10 text-text-primary" : "border-border bg-surface text-text-tertiary"} disabled:opacity-40`}><Icon size={12} />{label}</button>)}
+              {modules.map(({id,label,icon:Icon}) => <button key={id} onClick={() => openModule(id)} disabled={!coordinationResult && id !== "command"} className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-semibold transition-all ${activeModule === id ? "border-coordinator/40 bg-coordinator/10 text-text-primary" : "border-border bg-surface text-text-tertiary"} disabled:opacity-40`}><Icon size={12} />{label}</button>)}
             </div>
           </header>
 
@@ -706,3 +706,4 @@ export default function Dashboard({ user, accessToken }) {
       )}
     </div>
   );
+}
