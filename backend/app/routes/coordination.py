@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 import re
 
@@ -15,6 +17,26 @@ router = APIRouter(prefix="/coordination", tags=["Coordination"])
 def _number(value):
     match = re.search(r"\d+", str(value))
     return int(match.group()) if match else None
+
+
+def _latest_updates(updates):
+    latest = {}
+    for update in updates:
+        key = (
+            update.get("role", ""),
+            update.get("organization", ""),
+            update.get("metric", "").strip().lower(),
+        )
+        current = latest.get(key)
+        if current is None or update.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)) > current.get(
+            "updated_at", datetime.min.replace(tzinfo=timezone.utc)
+        ):
+            latest[key] = update
+    return sorted(
+        latest.values(),
+        key=lambda item: item.get("updated_at", datetime.min.replace(tzinfo=timezone.utc)),
+        reverse=True,
+    )
 
 
 def _latest_updates(updates):
