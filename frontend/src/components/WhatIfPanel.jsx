@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { SlidersHorizontal, Loader2, ArrowRight, Ambulance, Route } from "lucide-react";
+import { SlidersHorizontal, Loader2, ArrowRight, Ambulance, Route, GitCompare, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Panel, Badge, EmptyState } from "./primitives";
 import { itemText, itemMeta } from "../utils/format";
 
@@ -183,6 +183,16 @@ export default function WhatIfPanel({ incident, onRunSimulation, loading, result
           </p>
           {result ? (
             <div className="animate-rise space-y-4">
+              <div className="flex items-center justify-between rounded-lg border border-coordinator/20 bg-coordinator/[0.05] px-3.5 py-3">
+                <div className="flex items-center gap-2">
+                  <GitCompare size={14} className="text-coordinator" />
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-text-primary">Re-planning impact</p>
+                    <p className="text-[10px] text-text-tertiary">The coordinator recalculated the response under the simulated conditions.</p>
+                  </div>
+                </div>
+                <span className="rounded-full border border-coordinator/20 bg-coordinator/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-coordinator">Simulated</span>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg border border-border bg-surface-2/40 p-3.5">
                   <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-tertiary">
@@ -215,6 +225,23 @@ export default function WhatIfPanel({ incident, onRunSimulation, loading, result
                 </span>
                 <div className="h-px flex-1 bg-border" />
               </div>
+
+              {result.new_response_plan?.selected_actions?.length ? (
+                <div className="rounded-lg border border-safe/20 bg-safe/[0.04] p-3.5">
+                  <div className="mb-2 flex items-center gap-2 text-safe">
+                    <CheckCircle2 size={14} />
+                    <p className="text-[10px] font-semibold uppercase tracking-wider">New plan generated</p>
+                  </div>
+                  <p className="text-[12px] leading-relaxed text-text-secondary">
+                    {result.new_response_plan.selected_actions.length} actions selected under the changed conditions.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2 rounded-lg border border-critical/20 bg-critical/[0.04] p-3.5">
+                  <AlertTriangle size={14} className="mt-0.5 shrink-0 text-critical" />
+                  <p className="text-[12px] leading-relaxed text-text-secondary">The simulation did not produce a new action set.</p>
+                </div>
+              )}
 
               <PlanSnapshot
                 title="New Decision"
