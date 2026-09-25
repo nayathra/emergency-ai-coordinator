@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, EmailStr
 
 from app.services.database import users_collection
@@ -37,6 +37,12 @@ class SignupRequest(AuthRequest):
     organization: str | None = None
 
 
+class ResourceUpdate(BaseModel):
+    metric: str
+    value: str
+    note: str = ""
+
+
 def _token(user: dict) -> str:
     payload = {
         "sub": str(user["_id"]),
@@ -57,7 +63,24 @@ def _public_user(user: dict) -> dict:
         "role": user["role"],
         "role_label": ROLES.get(user["role"], user["role"]),
         "organization": user.get("organization"),
+        "resource_updates": user.get("resource_updates", []),
     }
+
+
+def current_user(authorization: str = Header(default="")) -> dict:
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Authentication required.")
+
+    token = authorization.split(" ", 1)[1]
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Session expired or invalid.")
+
+    user = users_collection.find_one({"_id": __import__("bson").ObjectId(payload["sub"])})
+    if not user:
+        raise HTTPException(status_code=401, detail="Account no longer exists.")
+    return user
 
 
 @router.post("/signup")
@@ -76,11 +99,11 @@ def signup(payload: SignupRequest):
         "password_hash": password_hasher.hash(payload.password),
         "role": role,
         "organization": (payload.organization or "").strip() or None,
+        "resource_updates": [],
         "created_at": datetime.now(timezone.utc),
     }
     result = users_collection.insert_one(user)
     user["_id"] = result.inserted_id
-
     return {"access_token": _token(user), "token_type": "bearer", "user": _public_user(user)}
 
 
@@ -88,13 +111,34 @@ def signup(payload: SignupRequest):
 def login(payload: AuthRequest):
     email = payload.email.lower().strip()
     user = users_collection.find_one({"email": email})
-
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     try:
         password_hasher.verify(user["password_hash"], payload.password)
-    except (VerifyMismatchError, Exception):
+    except VerifyMismatchError:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
 
     return {"access_token": _token(user), "token_type": "bearer", "user": _public_user(user)}
+
+
+@router.get("/me")
+def me(user: dict = Depends(current_user)):
+    return {"user": _public_user(user)}
+
+
+@router.post("/resource-update")
+def resource_update(update: ResourceUpdate, user: dict = Depends(current_user)):
+    entry = {
+        "metric": update.metric.strip(),
+        "value": update.value.strip(),
+        "note": update.note.strip(),
+        "role": user["role"],
+        "organization": user.get("organization"),
+        "updated_at": datetime.now(timezone.utc),
+    }
+    users_collection.update_one(
+        {"_id": user["_id"]},
+        {"$push": {"resource_updates": {"$each": [entry], "$slice": -20}}},
+    )
+    return {"message": "Operational update shared with authorized coordinators.", "update": entry}
