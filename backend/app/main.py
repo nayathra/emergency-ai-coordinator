@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.agents import router as agents_router
+from app.routes.auth import router as auth_router
 from app.routes.coordination import router as coordination_router
 from app.routes.simulation import router as simulation_router
 from app.routes.sms import router as sms_router
@@ -12,11 +13,9 @@ from app.routes.voice import router as voice_router
 app = FastAPI(
     title="Emergency AI Coordinator",
     description="Multi-Agent AI for Emergency Response Coordination",
-    version="1.0.0",
+    version="2.0.0",
 )
 
-
-# Allow frontend to communicate with backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -25,14 +24,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# API routers
+app.include_router(auth_router)
 app.include_router(agents_router)
 app.include_router(coordination_router)
 app.include_router(simulation_router)
 app.include_router(sms_router)
 app.include_router(incident_router)
 app.include_router(voice_router)
+
 
 @app.get("/")
 def root():
