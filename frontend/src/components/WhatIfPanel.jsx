@@ -161,7 +161,7 @@ export default function WhatIfPanel({ incident, onRunSimulation, loading, result
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-coordinator px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading && <Loader2 size={15} className="animate-spin" />}
-            {loading ? "Re-evaluating Emergency Conditions\u2026" : "Run Simulation"}
+            {loading ? "Re-evaluating Emergency Conditions\u2026" : hasChanges ? "Run Simulation" : "Change a condition first"}
           </button>
 
           {!hasChanges && !loading && (
