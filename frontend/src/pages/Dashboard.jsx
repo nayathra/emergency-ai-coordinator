@@ -3,7 +3,7 @@ import { Radio, ShieldAlert } from "lucide-react";
 
 import {
   healthCheck,
-  runCoordination,
+  runCoordination,\n  runLiveCoordination,
   runSimulation,
   speakText,
 } from "../services/api";
@@ -161,6 +161,28 @@ export default function Dashboard({ user, accessToken }) {
 
 
   // =========================================================
+  // =========================================================
+  // RECALCULATE FROM LIVE AGENCY UPDATES
+  // =========================================================
+
+  const handleRunLiveCoordination = async () => {
+    if (!accessToken) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await runLiveCoordination(incidentDraft, accessToken);
+      setIncidentDraft(result.incident);
+      setCoordinationResult(result);
+      setSystemStatus("operational");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   // RUN SIMULATION
   // =========================================================
 
@@ -501,7 +523,7 @@ export default function Dashboard({ user, accessToken }) {
           <>
 
 
-            {user?.role === "government" && accessToken && (\n\n              <OperationalFeed accessToken={accessToken} />\n\n            )}\n\n\n            {/* =================================================
+            {user?.role === "government" && accessToken && (\n\n              <OperationalFeed accessToken={accessToken} onRecalculate={handleRunLiveCoordination} />\n\n            )}\n\n\n            {/* =================================================
                 INCIDENT OVERVIEW
             ================================================= */}
 
