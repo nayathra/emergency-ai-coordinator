@@ -21,13 +21,13 @@ export function Badge({ tone = "neutral", children, className = "" }) {
 export function Panel({ title, eyebrow, icon: Icon, actions, children, className = "" }) {
   return (
     <section
-      className={`rounded-xl border border-border bg-surface/80 backdrop-blur-sm ${className}`}
+      className={`rounded-2xl border border-border bg-surface/90 shadow-[0_18px_60px_rgba(0,0,0,.16)] backdrop-blur-xl ${className}`}
     >
       {(title || actions) && (
-        <header className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+        <header className="flex items-center justify-between gap-4 border-b border-border bg-white/[0.012] px-6 py-5">
           <div className="flex items-center gap-2.5 min-w-0">
             {Icon && (
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-text-secondary">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-coordinator shadow-inner">
                 <Icon size={15} strokeWidth={1.75} />
               </span>
             )}
@@ -37,7 +37,7 @@ export function Panel({ title, eyebrow, icon: Icon, actions, children, className
                   {eyebrow}
                 </p>
               )}
-              <h2 className="truncate text-[13px] font-semibold uppercase tracking-wider text-text-primary">
+              <h2 className="truncate text-[14px] font-semibold tracking-tight text-text-primary">
                 {title}
               </h2>
             </div>
@@ -45,7 +45,7 @@ export function Panel({ title, eyebrow, icon: Icon, actions, children, className
           {actions && <div className="shrink-0">{actions}</div>}
         </header>
       )}
-      <div className="p-5">{children}</div>
+      <div className="p-6">{children}</div>
     </section>
   );
 }
