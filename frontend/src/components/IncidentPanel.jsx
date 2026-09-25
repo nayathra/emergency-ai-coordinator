@@ -89,7 +89,35 @@ value={incident.affected_population?.toLocaleString?.() ?? incident.affected_pop
       </p>  
       <TagList items={incident.urgent_needs} tone="warning" />  
     </div>  
-  </div>  
+  </div>
+
+{incident.scenario_context && (
+  <div className="mt-5 rounded-xl border border-gold/15 bg-gold/[0.035] p-4">
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Real-world incident context</p>
+      <span className="rounded-full border border-gold/20 bg-gold/5 px-2 py-1 text-[9px] font-semibold uppercase tracking-wider text-gold">Evidence grounded</span>
+    </div>
+    <p className="mt-2 text-[11px] leading-5 text-text-secondary">
+      {incident.scenario_context.evidence_snapshot || "Publicly reported Bihar flood information"}
+    </p>
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {[
+        ["Districts", incident.scenario_context.affected_districts],
+        ["Panchayats", incident.scenario_context.inundated_gram_panchayats],
+        ["NDRF teams", incident.scenario_context.ndrf_teams],
+        ["Boats", incident.scenario_context.boats_deployed],
+      ].map(([label, value]) => (
+        <div key={label} className="rounded-lg border border-border bg-surface/60 p-2.5">
+          <p className="text-[9px] uppercase tracking-wider text-text-tertiary">{label}</p>
+          <p className="mt-1 mono-tabular text-sm font-semibold text-text-primary">{value ?? "—"}</p>
+        </div>
+      ))}
+    </div>
+    <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+      {incident.scenario_context.real_world_note}
+    </p>
+  </div>
+)}
 </Panel>
 
 );
