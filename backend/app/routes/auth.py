@@ -35,6 +35,14 @@ class SignupRequest(AuthRequest):
     role: str
     organization: str | None = None
 
+ROLE_METRICS = {
+    "hospital": {"ambulances", "beds", "medical supplies", "patient surge"},
+    "police": {"units available", "blocked route", "evacuation status", "open routes"},
+    "transport": {"emergency vehicles", "route availability", "dispatch capacity", "fuel readiness"},
+    "ngo": {"shelters", "food / water stock", "volunteers", "open requests"},
+    "citizen": {"incident report", "shelter status", "local observation"},
+}
+
 class ResourceUpdate(BaseModel):
     metric: str
     value: str
@@ -115,8 +123,11 @@ def me(user: dict = Depends(current_user)):
 
 @router.post("/resource-update")
 def resource_update(update: ResourceUpdate, user: dict = Depends(current_user)):
+    metric = update.metric.strip().lower()
+    if metric not in ROLE_METRICS.get(user["role"], set()):
+        raise HTTPException(status_code=400, detail="Invalid operational metric for this role.")
     entry = {
-        "metric": update.metric.strip(),
+        "metric": metric,
         "value": update.value.strip(),
         "note": update.note.strip(),
         "role": user["role"],
