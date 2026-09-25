@@ -43,6 +43,14 @@ ROLE_METRICS = {
     "citizen": {"incident report", "shelter status", "local observation"},
 }
 
+ROLE_METRICS = {
+    "hospital": {"ambulances", "beds", "medical supplies", "patient surge"},
+    "police": {"units available", "blocked route", "evacuation status", "open routes"},
+    "transport": {"emergency vehicles", "route availability", "dispatch capacity", "fuel readiness"},
+    "ngo": {"shelters", "food / water stock", "volunteers", "open requests"},
+    "citizen": {"incident report", "shelter status", "local observation"},
+}
+
 class ResourceUpdate(BaseModel):
     metric: str
     value: str
