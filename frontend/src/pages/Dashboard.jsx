@@ -3,7 +3,8 @@ import { Radio, ShieldAlert } from "lucide-react";
 
 import {
   healthCheck,
-  runCoordination,\n  runLiveCoordination,
+  runCoordination,
+  runLiveCoordination,
   runSimulation,
   speakText,
 } from "../services/api";
