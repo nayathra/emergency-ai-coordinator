@@ -53,7 +53,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
       title="AI Response Assistant"
       eyebrow="Grounded Command Support"
       icon={Bot}
-      className="min-h-[calc(100vh-185px)] border-cyan/20 bg-surface"
+      className="min-h-[calc(100vh-155px)] border-cyan/20 bg-surface"
     >
       <div className="mb-4 flex items-start gap-3 rounded-lg border border-cyan/15 bg-cyan/[0.04] p-3">
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-cyan/10 text-cyan">
@@ -61,21 +61,21 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
         </span>
         <div>
           <p className="text-[12px] font-semibold text-text-primary">Ask the coordinator</p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-text-tertiary">
+          <p className="mt-0.5 text-[12px] leading-6 text-text-tertiary">
             Answers are grounded in the current incident and coordination result. It does not autonomously dispatch resources.
           </p>
         </div>
         <ShieldCheck size={14} className="ml-auto shrink-0 text-safe" />
       </div>
 
-      <div className="min-h-[42vh] max-h-[58vh] space-y-4 overflow-y-auto border-y border-border/70 py-5 pr-2">
+      <div className="min-h-[50vh] max-h-[62vh] space-y-5 overflow-y-auto border-y border-border/70 py-5 pr-2">
         {messages.map((message, index) => (
           <div key={index} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
             <div
               className={
                 message.role === "user"
-                  ? "max-w-[85%] rounded-xl rounded-br-sm bg-coordinator px-3.5 py-2.5 text-[12px] leading-relaxed text-white"
-                  : "max-w-[90%] rounded-xl rounded-bl-sm border border-border bg-surface-2/60 px-3.5 py-2.5 text-[12px] leading-relaxed text-text-secondary"
+                  ? "max-w-[85%] rounded-xl rounded-br-sm bg-coordinator px-3.5 py-2.5 text-[13px] leading-7 text-white"
+                  : "max-w-[90%] rounded-xl rounded-bl-sm border border-border bg-surface-2/60 px-3.5 py-2.5 text-[13px] leading-7 text-text-secondary"
               }
             >
               {message.text}
