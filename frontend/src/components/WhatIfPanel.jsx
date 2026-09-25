@@ -157,7 +157,7 @@ export default function WhatIfPanel({ incident, onRunSimulation, loading, result
 
           <button
             onClick={handleRun}
-            disabled={loading}
+            disabled={loading || !hasChanges}
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-coordinator px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading && <Loader2 size={15} className="animate-spin" />}
@@ -191,7 +191,7 @@ export default function WhatIfPanel({ incident, onRunSimulation, loading, result
                     <p className="text-[10px] text-text-tertiary">The coordinator recalculated the response under the simulated conditions.</p>
                   </div>
                 </div>
-                <span className="rounded-full border border-coordinator/20 bg-coordinator/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-coordinator">Simulated</span>
+                <span className={`rounded-full border px-2 py-1 text-[9px] font-bold uppercase tracking-wider ${hasChanges ? "border-coordinator/20 bg-coordinator/10 text-coordinator" : "border-border bg-surface-2 text-text-tertiary"}`}>{hasChanges ? "Re-planned" : "No change"}</span>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg border border-border bg-surface-2/40 p-3.5">
