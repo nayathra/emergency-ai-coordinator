@@ -27,16 +27,33 @@ import AssistantPanel from "../components/AssistantPanel";
 
 
 const DEFAULT_INCIDENT = {
-  incident_id: "FLOOD-001",
-  incident_type: "Flood",
-  location: "Chennai · Zone A",
+  incident_id: "BIHAR-FLOOD-2026",
+  incident_type: "Bihar Flood Response",
+  location: "Bhagalpur · Bihar",
   severity: 9,
-  affected_population: 8000,
+  affected_population: 5049000,
   blocked_routes: ["Route A"],
   active_routes: ["Route B", "Route C"],
+  // Prototype coordination inputs are simulated because public reports do not
+  // expose live hospital/ambulance/shelter capacity for this exact zone.
   available_ambulances: 2,
   available_shelters: 2,
-  urgent_needs: ["medical supplies", "food", "water"],
+  urgent_needs: ["medical supplies", "food", "water", "evacuation support"],
+  scenario_context: {
+    evidence_snapshot: "Bihar flood situation reported on 23 Sep 2026",
+    affected_districts: 15,
+    inundated_gram_panchayats: 576,
+    affected_blocks: 88,
+    relief_camps: 6,
+    people_in_relief_camps: 7714,
+    sdrf_teams: 27,
+    ndrf_teams: 8,
+    boats_deployed: 391,
+    rainfall_since_june_mm: 661.9,
+    rainfall_vs_normal_percent: -29,
+    real_world_note: "Publicly reported Bihar flood figures are used as incident context. Route, ambulance, shelter and agency-level operational values are simulation inputs for this prototype.",
+    river_update: "25 Sep 2026 river monitoring included stations above warning/danger levels, including Bagmati at Benibad and Kosi at Birpur.",
+  },
 };
 
 
