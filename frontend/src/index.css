@@ -5,17 +5,17 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
   /* Surfaces */
-  --color-base: #0d0f15;
-  --color-surface: #171a23;
-  --color-surface-2: #202431;
-  --color-surface-3: #2a2f3d;
-  --color-border: #303543;
-  --color-border-strong: #41485a;
+  --color-base: #070b14;
+  --color-surface: #0d1422;
+  --color-surface-2: #141e31;
+  --color-surface-3: #1b2a42;
+  --color-border: #243653;
+  --color-border-strong: #365171;
 
   /* Text */
-  --color-text-primary: #e9eaed;
-  --color-text-secondary: #a9afbd;
-  --color-text-tertiary: #737b8e;
+  --color-text-primary: #f4f7fb;
+  --color-text-secondary: #a7b7ca;
+  --color-text-tertiary: #6f8199;
 
   /* Semantic accents */
   --color-critical: #ef4444;
@@ -24,9 +24,11 @@
   --color-warning-dim: #78350f;
   --color-safe: #34d399;
   --color-safe-dim: #064e3b;
-  --color-coordinator: #817cff;
-  --color-coordinator-dim: #3b367f;
-  --color-cyan: #45d9c5;
+  --color-coordinator: #4f8cff;
+  --color-coordinator-dim: #173b76;
+  --color-cyan: #35d9d1;
+  --color-gold: #d8b15a;
+  --color-gold-dim: #6f5520;
 
   --animate-pulse-slow: pulse-slow 2.4s ease-in-out infinite;
   --animate-flow: flow-dash 1.6s linear infinite;
@@ -57,8 +59,9 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(circle at 15% 0%, rgba(129, 124, 255, 0.10), transparent 45%),
-    radial-gradient(circle at 100% 20%, rgba(69, 217, 197, 0.045), transparent 40%);
+    radial-gradient(circle at 12% 0%, rgba(79, 140, 255, 0.14), transparent 42%),
+    radial-gradient(circle at 92% 8%, rgba(216, 177, 90, 0.055), transparent 34%),
+    linear-gradient(180deg, rgba(12, 25, 43, 0.92), rgba(7, 11, 20, 0.98));
   background-attachment: fixed;
 }
 
@@ -231,3 +234,6 @@ body {
   background: radial-gradient(circle at 20% 0%, rgba(129,124,255,.12), transparent 38%),
               radial-gradient(circle at 90% 10%, rgba(69,217,197,.055), transparent 32%);
 }
+
+
+.command-grid-bg{background-image:linear-gradient(rgba(79,140,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(79,140,255,.035) 1px,transparent 1px);background-size:34px 34px}.command-glass{background:linear-gradient(145deg,rgba(18,31,51,.94),rgba(9,17,29,.96));border:1px solid rgba(79,140,255,.18);box-shadow:0 24px 80px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.025)}.signal-gold{color:var(--color-gold)}
