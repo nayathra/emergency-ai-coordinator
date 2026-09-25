@@ -47,3 +47,10 @@ export async function speakText(text,language="en"){
   if(!response.ok){let message="Voice generation failed.";try{const data=await response.json();message=data.detail||message;}catch{}throw new ApiError(message,{status:response.status});}
   return response.blob();
 }
+
+export function askAssistant(question, context) {
+  return request("/assistant/ask", {
+    method: "POST",
+    body: JSON.stringify({ question, ...context }),
+  });
+}
