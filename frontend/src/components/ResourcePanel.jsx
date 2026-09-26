@@ -11,7 +11,6 @@ import {
 
 import { Panel, EmptyState } from "./primitives";
 import { itemText, itemMeta } from "../utils/format";
-import { sendEmergencySMS } from "../services/api";
 
 function AvailabilityCard({ icon: Icon, label, value }) {
   const isZero = Number(value) === 0;
@@ -88,44 +87,10 @@ export default function ResourcePanel({
     setDispatchError(null);
 
     try {
-      const actions =
-        responsePlan?.selected_actions
-          ?.slice(0, 4)
-          ?.map((action) => `• ${action}`)
-          ?.join("\n") ||
-        "• Emergency resources coordinated";
-
-      const priority =
-        responsePlan?.overall_priority ?? incident.severity;
-
-      const message = `
-🚨 EMERGENCY AI COORDINATOR
-
-Incident: ${incident.incident_type}
-Location: ${incident.location}
-Severity: ${incident.severity}/10
-Priority: ${priority}
-
-AI Response Actions:
-${actions}
-
-Emergency Route:
-${incident.active_routes?.[0] || "Route identified"}
-
-Emergency resources have been dispatched.
-      `.trim();
-
-      await sendEmergencySMS(
-        "+919087300093",
-        message
-      );
-
+      await new Promise((resolve) => setTimeout(resolve, 900));
       setDispatchSuccess(true);
     } catch (error) {
-      console.error("Dispatch Error:", error);
-      setDispatchError(
-        error.message || "Failed to send emergency SMS."
-      );
+      setDispatchError(error.message || "Dispatch simulation failed.");
     } finally {
       setDispatching(false);
     }
@@ -199,7 +164,7 @@ Emergency resources have been dispatched.
             </h3>
 
             <p className="text-[11px] text-text-tertiary">
-              Send the AI response to emergency personnel
+              Simulated command dispatch — no external message is sent
             </p>
           </div>
         </div>
@@ -218,7 +183,7 @@ Emergency resources have been dispatched.
           {dispatchSuccess ? (
             <>
               <CheckCircle2 size={16} />
-              Emergency SMS Sent
+              Dispatch Simulation Complete
             </>
           ) : dispatching ? (
             <>
@@ -244,8 +209,7 @@ Emergency resources have been dispatched.
             />
 
             <p className="text-[11px] text-safe">
-              AI response coordinated and emergency SMS
-              successfully sent through Twilio.
+              AI response prepared successfully. This hackathon mode does not contact real emergency personnel.
             </p>
           </div>
         )}

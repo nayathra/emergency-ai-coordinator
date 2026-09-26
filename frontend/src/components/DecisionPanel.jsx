@@ -1,4 +1,4 @@
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 import { Panel, Badge, EmptyState } from "./primitives";
 import { itemText, itemMeta, severityFromNumber } from "../utils/format";
 
@@ -40,12 +40,28 @@ export default function DecisionPanel({ plan }) {
   return (
     <Panel
       title="Coordinator Decision"
-      eyebrow="Explainable Action Plan"
+      eyebrow="AI-Assisted Response Command"
+      className="border-coordinator/30 bg-gradient-to-br from-coordinator/[0.06] via-surface to-surface"
       icon={Sparkles}
       actions={
         <Badge tone={tone}>Overall Priority {overall_priority}/10</Badge>
       }
     >
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-coordinator/20 bg-coordinator/[0.06] p-4">
+          <div className="flex items-center gap-2 text-coordinator"><Zap size={14}/><span className="text-[10px] font-semibold uppercase tracking-[.16em]">Priority</span></div>
+          <p className="mono-tabular mt-2 text-2xl font-bold text-text-primary">{overall_priority}<span className="text-sm text-text-tertiary">/10</span></p>
+        </div>
+        <div className="rounded-xl border border-safe/20 bg-safe/[0.05] p-4">
+          <div className="flex items-center gap-2 text-safe"><CheckCircle2 size={14}/><span className="text-[10px] font-semibold uppercase tracking-[.16em]">Actions</span></div>
+          <p className="mono-tabular mt-2 text-2xl font-bold text-text-primary">{selected_actions.length}</p>
+        </div>
+        <div className="rounded-xl border border-border bg-surface-2/50 p-4">
+          <div className="flex items-center gap-2 text-text-secondary"><ShieldCheck size={14}/><span className="text-[10px] font-semibold uppercase tracking-[.16em]">Human Review</span></div>
+          <p className="mt-2 text-sm font-semibold text-text-primary">Required before dispatch</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wider text-text-secondary">

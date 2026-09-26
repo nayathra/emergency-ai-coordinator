@@ -89,7 +89,35 @@ value={incident.affected_population?.toLocaleString?.() ?? incident.affected_pop
       </p>  
       <TagList items={incident.urgent_needs} tone="warning" />  
     </div>  
-  </div>  
+  </div>
+
+{incident.scenario_context && (
+  <div className="mt-5 rounded-xl border border-gold/15 bg-gold/[0.035] p-4">
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Real-world incident context</p>
+      <span className="rounded-full border border-gold/20 bg-gold/5 px-2 py-1 text-[9px] font-semibold uppercase tracking-wider text-gold">Evidence grounded</span>
+    </div>
+    <p className="mt-2 text-[11px] leading-5 text-text-secondary">
+      {incident.scenario_context.evidence_snapshot || "Publicly reported Bihar flood information"}
+    </p>
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {[
+        ["Districts", incident.scenario_context.affected_districts],
+        ["Panchayats", incident.scenario_context.inundated_gram_panchayats],
+        ["NDRF teams", incident.scenario_context.ndrf_teams],
+        ["Boats", incident.scenario_context.boats_deployed],
+      ].map(([label, value]) => (
+        <div key={label} className="rounded-lg border border-border bg-surface/60 p-2.5">
+          <p className="text-[9px] uppercase tracking-wider text-text-tertiary">{label}</p>
+          <p className="mt-1 mono-tabular text-sm font-semibold text-text-primary">{value ?? "—"}</p>
+        </div>
+      ))}
+    </div>
+    <p className="mt-3 text-[10px] leading-4 text-text-tertiary">
+      {incident.scenario_context.real_world_note}
+    </p>
+  </div>
+)}
 </Panel>
 
 );
@@ -108,8 +136,8 @@ raw
 );
 
 return (
-<Panel title="Incident Intake" eyebrow="Configure Scenario" icon={MapPin}>
-<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<Panel title="Incident Intake" eyebrow="LIVE SCENARIO CONFIGURATION" icon={MapPin} className="h-full command-glass">
+<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 <LabeledInput
 label="Incident ID"
 value={draft.incident_id}
@@ -175,7 +203,7 @@ onChange={(v) => updateList("urgent_needs", v)}
 <button  
     onClick={onSubmit}  
     disabled={submitting}  
-    className="mt-6 inline-flex items-center gap-2 rounded-lg bg-coordinator px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-coordinator/90 disabled:cursor-not-allowed disabled:opacity-60"  
+    className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-coordinator/30 bg-gradient-to-r from-coordinator to-[#3d72df] px-5 py-3.5 text-[13px] font-semibold text-white shadow-lg shadow-coordinator/20 transition-all hover:-translate-y-0.5 hover:shadow-coordinator/30 disabled:cursor-not-allowed disabled:opacity-60"  
   >  
     {submitting && <Loader2 size={15} className="animate-spin" />}  
     {submitting ? "Consulting Emergency Agents\u2026" : "Run Coordination Analysis"}  
@@ -187,7 +215,7 @@ onChange={(v) => updateList("urgent_needs", v)}
 
 function LabeledInput({ label, value, onChange, type = "text", className = "", ...rest }) {
 return (
-<label className={'block ${className}'}>
+<label className={`block ${className}`}>
 <span className="mb-1.5 block text-[10px] font-medium uppercase tracking-wider text-text-tertiary">
 {label}
 </span>
@@ -195,7 +223,7 @@ return (
 type={type}
 value={value}
 onChange={(e) => onChange(e.target.value)}
-className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-[13px] text-text-primary outline-none transition-colors focus:border-coordinator"
+className="w-full rounded-xl border border-border bg-[#101a2b] px-3.5 py-3 text-[13px] text-text-primary outline-none transition-all placeholder:text-text-tertiary focus:border-coordinator focus:ring-2 focus:ring-coordinator/10"
 {...rest}
 />
 </label>
