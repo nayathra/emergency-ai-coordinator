@@ -18,6 +18,8 @@ export const TAMIL_TRANSLATIONS = {
   "Voice briefing":"குரல் விளக்கம்",
   "Live":"நேரலை",
   "Emergency AI Coordinator":"அவசர AI ஒருங்கிணைப்பாளர்",
+  "Government / Disaster Management":"அரசு / பேரிடர் மேலாண்மை",
+  "Sign out":"வெளியேறு",
   "Command interface":"கட்டுப்பாட்டு இடைமுகம்",
   "Open Coordination Center":"ஒருங்கிணைப்பு மையத்தைத் திறக்கவும்",
   "Back to role workspace":"பணி இடத்திற்குத் திரும்பவும்",
