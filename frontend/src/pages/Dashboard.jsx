@@ -60,7 +60,7 @@ const DEFAULT_INCIDENT = {
 };
 
 
-export default function Dashboard({ user, accessToken }) {
+export default function Dashboard({ user, accessToken, onLogout }) {
 
   const { language } = usePreferences();
 
@@ -719,18 +719,30 @@ export default function Dashboard({ user, accessToken }) {
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="sticky top-0 z-30 border-b border-border bg-[#08111d]/88 shadow-[0_12px_40px_rgba(0,0,0,.18)] backdrop-blur-2xl">
-            <div className="flex min-h-[74px] items-center justify-between gap-3 px-4 sm:px-6">
-              <div className="flex min-w-0 items-center gap-3 lg:hidden">
-                <span className="grid h-9 w-9 place-items-center rounded-lg bg-coordinator/15 text-coordinator"><ShieldAlert size={17} /></span>
-                <div className="min-w-0"><p className="truncate text-sm font-bold text-text-primary">Emergency AI Coordinator</p><p className="text-[10px] text-text-tertiary">Command interface</p></div>
+          <header className="sticky top-0 z-30 border-b border-border bg-surface/90 shadow-[0_12px_40px_rgba(0,0,0,.18)] backdrop-blur-2xl">
+            <div className="flex min-h-[74px] items-center gap-4 px-4 sm:px-6">
+              <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 items-center gap-3 lg:hidden">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-coordinator/15 text-coordinator"><ShieldAlert size={17} /></span>
+                  <div className="min-w-0"><p className="truncate text-sm font-bold text-text-primary">Emergency AI Coordinator</p><p className="text-[10px] text-text-tertiary">Command interface</p></div>
+                </div>
+                <div className="hidden min-w-0 items-center gap-3 lg:flex">
+                  <div className="min-w-0"><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-text-tertiary">Current workspace</p><p className="mt-0.5 truncate text-sm font-semibold text-text-primary">{modules.find((m) => m.id === activeModule)?.label}</p></div>
+                </div>
               </div>
-              <div className="hidden min-w-0 items-center gap-3 lg:flex">
-                <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-text-tertiary">Current workspace</p><p className="mt-0.5 text-sm font-semibold text-text-primary">{modules.find((m) => m.id === activeModule)?.label}</p></div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => openModule("voice")} disabled={!coordinationResult} className="group flex items-center gap-2 rounded-full border border-coordinator/25 bg-coordinator/5 px-3 py-2 text-[11px] font-semibold text-text-primary transition-all hover:-translate-y-0.5 hover:border-coordinator/50 hover:bg-coordinator/10 disabled:cursor-not-allowed disabled:opacity-40"><span className="grid h-5 w-5 place-items-center rounded-full bg-coordinator/15 text-coordinator"><Volume2 size={11} /></span><span className="hidden sm:inline">Voice briefing</span></button>
-                <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-2 text-[10px] font-semibold uppercase tracking-wider"><span className={`h-1.5 w-1.5 rounded-full ${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />{systemStatus === "operational" ? "Live" : systemStatus === "offline" ? "Offline" : "Checking"}</div>
+              <div className="flex shrink-0 items-center gap-2">
+                <button onClick={() => openModule("voice")} disabled={!coordinationResult} className="group hidden items-center gap-2 rounded-full border border-coordinator/25 bg-coordinator/5 px-3 py-2 text-[11px] font-semibold text-text-primary transition-all hover:-translate-y-0.5 hover:border-coordinator/50 hover:bg-coordinator/10 disabled:cursor-not-allowed disabled:opacity-40 sm:flex"><span className="grid h-5 w-5 place-items-center rounded-full bg-coordinator/15 text-coordinator"><Volume2 size={11} /></span><span>Voice briefing</span></button>
+                <ThemeLanguageControls compact />
+                <div className="hidden items-center gap-2 rounded-full border border-border bg-surface px-3 py-2 text-[10px] font-semibold uppercase tracking-wider sm:flex"><span className={`h-1.5 w-1.5 rounded-full ${systemStatus === "operational" ? "bg-safe animate-pulse-slow" : systemStatus === "offline" ? "bg-critical" : "bg-text-tertiary animate-pulse-slow"}`} />{systemStatus === "operational" ? "Live" : systemStatus === "offline" ? "Offline" : "Checking"}</div>
+                {user?.name && (
+                  <div className="hidden max-w-[180px] min-w-0 text-right md:block">
+                    <p className="truncate text-xs font-semibold text-text-primary">{user.name}</p>
+                    <p className="truncate text-[10px] text-text-tertiary">{user.organization || "Government / Disaster Management"}</p>
+                  </div>
+                )}
+                {onLogout && (
+                  <button onClick={onLogout} title="Sign out" aria-label="Sign out" className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-border bg-surface text-text-tertiary transition-colors hover:border-critical/30 hover:text-critical"><span className="text-xs">↪</span></button>
+                )}
               </div>
             </div>
             <div className="flex gap-2 overflow-x-auto border-t border-border px-4 py-2 lg:hidden">
