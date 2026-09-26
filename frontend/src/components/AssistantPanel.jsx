@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Bot, Send, Sparkles, Loader2, ShieldCheck } from "lucide-react";
 import { Panel } from "./primitives";
 import { askAssistant } from "../services/api";
+import { usePreferences } from "../utils/i18n";
 
 const STARTERS = [
   "Why was this action prioritized?",
@@ -15,7 +16,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "I can explain the current incident, agent recommendations, conflicts, routes and response plan. Ask me a question.",
+      text: language === "ta" ? "தற்போதைய சம்பவம், முகவர் பரிந்துரைகள், முரண்பாடுகள், பாதைகள் மற்றும் பதில் திட்டத்தை நான் விளக்க முடியும். ஒரு கேள்வியைக் கேளுங்கள்." : "I can explain the current incident, agent recommendations, conflicts, routes and response plan. Ask me a question.",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -91,7 +92,7 @@ export default function AssistantPanel({ incident, responsePlan, agentReports })
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
-        {STARTERS.map((starter) => (
+        {(language === "ta" ? ["இந்த நடவடிக்கைக்கு ஏன் முன்னுரிமை அளிக்கப்பட்டது?", "தற்போது எந்த பாதைகள் பாதுகாப்பானவை?", "எந்த முரண்பாடுகள் தீர்க்கப்பட்டன?", "ஆம்புலன்ஸ் கிடைக்கவில்லை என்றால் என்ன நடக்கும்?"] : STARTERS).map((starter) => (
           <button
             key={starter}
             onClick={() => submit(starter)}
