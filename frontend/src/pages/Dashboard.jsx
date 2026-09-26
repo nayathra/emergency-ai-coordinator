@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Ambulance, Boxes, BrainCircuit, GitMerge, Home, LayoutDashboard, LoaderCircle, MapPinned, MessageCircle, Radio, RefreshCw, Route, ShieldAlert, UsersRound, Volume2 } from "lucide-react";
+import ThemeLanguageControls from "../components/ThemeLanguageControls";
+import { usePreferences } from "../utils/i18n";
 
 import {
   healthCheck,
@@ -59,6 +61,8 @@ const DEFAULT_INCIDENT = {
 
 
 export default function Dashboard({ user, accessToken }) {
+
+  const { language } = usePreferences();
 
   // =========================================================
   // INCIDENT
