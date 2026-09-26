@@ -50,9 +50,9 @@ export async function speakText(text,language="en"){
   return response.blob();
 }
 
-export function askAssistant(question, context) {
+export function askAssistant(question, context, language = "en") {
   return request("/assistant/ask", {
     method: "POST",
-    body: JSON.stringify({ question, ...context }),
+    body: JSON.stringify({ question, language, ...context }),
   });
 }
