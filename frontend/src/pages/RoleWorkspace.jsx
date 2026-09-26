@@ -36,7 +36,7 @@ export default function RoleWorkspace({session,user,onLogout}) {
   const [updateState,setUpdateState]=useState("idle");
   const [scenarioSeed,setScenarioSeed]=useState(false);
   const meta=ROLE_META[user.role];
-  if(user.role==="government") return <div className="relative"><GovernmentShell user={user} onLogout={onLogout}/><Dashboard user={user} accessToken={session.access_token}/></div>;
+  if(user.role==="government") return <Dashboard user={user} accessToken={session.access_token} onLogout={onLogout}/>;
   const Icon=meta.icon, cards=DATA[user.role];
 
   const seedBiharScenario = async () => {
