@@ -335,3 +335,45 @@ html[data-theme="light"] select {
 html[data-lang="ta"] body {
   font-family: "Noto Sans Tamil", "Latha", "Nirmala UI", var(--font-sans);
 }
+
+
+/* Theme hardening for legacy hard-coded surfaces. */
+html[data-theme="light"] [class*="bg-[#08111d]"],
+html[data-theme="light"] [class*="bg-[#0b1320]"],
+html[data-theme="light"] [class*="bg-[#0d1727]"],
+html[data-theme="light"] [class*="bg-[#09111d]"],
+html[data-theme="light"] [class*="bg-[#122139]"],
+html[data-theme="light"] [class*="bg-[#0d1726]"],
+html[data-theme="light"] [class*="bg-[#0b1422]"],
+html[data-theme="light"] [class*="bg-[#101a2b]"] {
+  background-color: var(--color-surface) !important;
+  background-image: none !important;
+}
+
+html[data-theme="light"] [class*="border-[#243653]"],
+html[data-theme="light"] [class*="border-[#2d4566]"] {
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="light"] [class*="text-[#647894]"],
+html[data-theme="light"] [class*="text-[#7d90aa]"],
+html[data-theme="light"] [class*="text-[#a7b7ca]"],
+html[data-theme="light"] [class*="text-[#c6d3e2]"] {
+  color: var(--color-text-secondary) !important;
+}
+
+html[data-theme="light"] [class*="text-white"] {
+  color: var(--color-text-primary) !important;
+}
+
+html[data-theme="light"] button.bg-\[\#4f8cff\] {
+  color: #ffffff !important;
+}
+
+html[data-theme="light"] .bg-black\/20 {
+  background-color: rgba(255,255,255,.72) !important;
+}
+
+html[data-theme="light"] .command-grid-bg {
+  background-color: transparent !important;
+}
